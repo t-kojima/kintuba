@@ -24,6 +24,7 @@
     ]
   },
   "dependencies": {
+    "cac": "^5.0.10",
     "jsonschema": "^1.2.4",
     "node-fetch": "^2.1.2"
   },

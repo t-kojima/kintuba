@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const fetchSchema = async (config) => {
+exports.fetch = async (config) => {
   const url = `https://${config.domain}/k/v1/form.json?app=2`;
   const headers = {
     'X-Cybozu-Authorization': Buffer.from(`${config.username}:${config.password}`).toString('base64'),
@@ -15,5 +15,3 @@ const fetchSchema = async (config) => {
     return JSON.stringify(json, null, '  ');
   }
 };
-
-exports.schema = fetchSchema;
