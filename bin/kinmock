@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const cac = require('cac');
 const config = require('./lib/config');
 
