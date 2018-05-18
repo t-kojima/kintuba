@@ -1,7 +1,7 @@
 {
   "name": "kinmock",
   "version": "0.0.1",
-  "description": "mock for kintone unittest",
+  "description": "kinmock is mock for a unittest, it can use the kintone global object.",
   "main": "index.js",
   "repository": "git@github.com:t-kojima/kinmock.git",
   "author": "t-kojima <t-kojima@skullware.net>",
@@ -29,6 +29,6 @@
     "node-fetch": "^2.1.2"
   },
   "bin": {
-    "kinmock": "bin/index.js"
+    "kinmock": "./bin/index.js"
   }
 }
