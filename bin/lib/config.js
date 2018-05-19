@@ -3,7 +3,7 @@
 const fs = require('fs');
 const { Validator } = require('jsonschema');
 
-const FILE_PATH = 'kinmock.json';
+const FILE_PATH = '.kinmock.json';
 const ENCODING = 'utf8';
 
 const schema = {
@@ -43,7 +43,7 @@ exports.create = () => {
   };
 
   if (exists(FILE_PATH)) {
-    throw Error(`${FILE_PATH} は既に存在しています`);
+    throw Error(`${FILE_PATH} already exists.`);
   } else {
     fs.writeFile(FILE_PATH, JSON.stringify(data, null, '  '), { encoding: ENCODING }, (err) => {
       if (err) throw err;
@@ -56,14 +56,14 @@ exports.load = () => {
     try {
       return JSON.parse(fs.readFileSync(FILE_PATH, ENCODING));
     } catch (err) {
-      throw Error(`${FILE_PATH} が読み込めませんでした。`);
+      throw Error(`${FILE_PATH} can not read.`);
     }
   };
 
   const validate = (source) => {
     const result = new Validator().validate(source, schema);
     if (result.errors.length > 0) {
-      throw Error(`${FILE_PATH} の内容が不正です。[${result.errors[0].message}]`);
+      throw Error(`${FILE_PATH} is an invalid json schema. [${result.errors[0].message}]`);
     }
   };
 

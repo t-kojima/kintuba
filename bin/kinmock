@@ -11,6 +11,6 @@ cli.command('init', 'Create a blank setting file.', () => {
   config.create();
 });
 
-cli.command('create', 'Create a blank fixture file with kintone REST API.', () => {});
+cli.command('fetch', 'Fetch are app schema files with kintone REST API.', () => {});
 
 cli.parse();
