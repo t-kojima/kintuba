@@ -1,0 +1,114 @@
+[
+  {
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "2"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "develop@skullware.net",
+        "name": "develop@skullware.net"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "develop@skullware.net",
+        "name": "develop@skullware.net"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    },
+    "文字列__1行_": {
+      "type": "SINGLE_LINE_TEXT",
+      "value": "DUMMY2"
+    },
+    "文字列__複数行_": {
+      "type": "MULTI_LINE_TEXT",
+      "value": "DUMMY2"
+    },
+    "リッチエディター": {
+      "type": "RICH_TEXT",
+      "value": "<div>DUMMY2<br /></div>"
+    },
+    "数値": {
+      "type": "NUMBER",
+      "value": "777"
+    },
+    "計算": {
+      "type": "CALC",
+      "value": "7770"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "$id": {
+      "type": "__ID__",
+      "value": "2"
+    }
+  },
+  {
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "1"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "develop@skullware.net",
+        "name": "develop@skullware.net"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "develop@skullware.net",
+        "name": "develop@skullware.net"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": "2018-05-17T01:57:00Z"
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": "2018-05-17T01:57:00Z"
+    },
+    "文字列__1行_": {
+      "type": "SINGLE_LINE_TEXT",
+      "value": "ダミー文字列（1行）"
+    },
+    "文字列__複数行_": {
+      "type": "MULTI_LINE_TEXT",
+      "value": "ダミー文字列（複数行"
+    },
+    "リッチエディター": {
+      "type": "RICH_TEXT",
+      "value": "<div>ダミー文字列&#xff08;リッチ&#xff09;<br /></div>"
+    },
+    "数値": {
+      "type": "NUMBER",
+      "value": "9999"
+    },
+    "計算": {
+      "type": "CALC",
+      "value": "99990"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "$id": {
+      "type": "__ID__",
+      "value": "1"
+    }
+  }
+]

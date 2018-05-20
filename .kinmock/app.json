@@ -1,0 +1,18 @@
+{
+  "appId": "2",
+  "code": "",
+  "name": "ダミーアプリ",
+  "description": "",
+  "createdAt": "2018-05-16T12:08:36.000Z",
+  "creator": {
+    "code": "t-kojima@skullware.net",
+    "name": "t-kojima@skullware.net"
+  },
+  "modifiedAt": "2018-05-20T01:03:03.000Z",
+  "modifier": {
+    "code": "t-kojima@skullware.net",
+    "name": "t-kojima@skullware.net"
+  },
+  "spaceId": null,
+  "threadId": null
+}

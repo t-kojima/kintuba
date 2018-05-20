@@ -41,6 +41,23 @@ $ yarn add --dev kinmock
 require('kinmock')
 ```
 
+## イベントの実行
+
+kintoneでは画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので、kinmockではイベントを実行する関数を用意しています。
+
+`kintone.events.on`でイベントを登録するのに対し、`kintone.events.do`でイベントを実行します。
+
+```javascript
+kintone.events.on('app.record.index.show', (event) => {
+  console.log('event done');
+});
+
+kintone.events.do('app.record.index.show');
+
+=> event done
+```
+
+
 ## テストデータの利用
 
 kintone REST API を利用してアプリの定義を取得し、レコードのデータを作成します。
