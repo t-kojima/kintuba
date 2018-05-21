@@ -44,7 +44,7 @@ exports.init = async () => {
   };
 
   if (await exists(FILE_PATH)) {
-    throw Error(`${FILE_PATH} already exists.`);
+    throw new Error(`${FILE_PATH} already exists.`);
   } else {
     await promisify(fs.writeFile)(FILE_PATH, JSON.stringify(data, null, '  '), {
       encoding: ENCODING,
@@ -55,7 +55,7 @@ exports.init = async () => {
 exports.load = async () => {
   const readFile = async () => {
     const json = await promisify(fs.readFile)(FILE_PATH, ENCODING).catch(() => {
-      throw Error(`${FILE_PATH} can not read.`);
+      throw new Error(`${FILE_PATH} can not read.`);
     });
     return JSON.parse(json);
   };
@@ -63,7 +63,7 @@ exports.load = async () => {
   const validate = (source) => {
     const result = new Validator().validate(source, schema);
     if (result.errors.length > 0) {
-      throw Error(`${FILE_PATH} is an invalid json schema. [${result.errors[0].message}]`);
+      throw new Error(`${FILE_PATH} is an invalid json schema. [${result.errors[0].message}]`);
     }
   };
 

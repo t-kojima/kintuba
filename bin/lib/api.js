@@ -25,7 +25,7 @@ exports.fetch = async () => {
     const response = await fetch(url, { headers });
     const json = await response.json();
     if (!response.ok) {
-      throw Error(json.message);
+      throw new Error(json.message);
     } else {
       return JSON.stringify(json, null, '  ');
     }

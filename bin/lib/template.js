@@ -34,7 +34,7 @@ const createRecords = async () => {
   const readFile = async () => {
     const FILE_PATH = '.kinmock/schema/fields.json';
     const json = await promisify(fs.readFile)(FILE_PATH, ENCODING).catch(() => {
-      throw Error(`${FILE_PATH} can not read.`);
+      throw new Error(`${FILE_PATH} can not read.`);
     });
     return JSON.parse(json);
   };
