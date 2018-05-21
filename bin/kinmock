@@ -2,15 +2,24 @@
 
 const cac = require('cac');
 const config = require('./lib/config');
+const api = require('./lib/api');
 
 const cli = cac();
 
 cli.command('*', 'Display help <default>', () => cli.showHelp());
 
 cli.command('init', 'Create a blank setting file.', () => {
-  config.create();
+  config.init().catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  });
 });
 
-cli.command('fetch', 'Fetch are app schema files with kintone REST API.', () => {});
+cli.command('fetch', 'Fetch are app schema files with kintone REST API.', () => {
+  api.fetch().catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  });
+});
 
 cli.parse();

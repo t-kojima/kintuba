@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const { promisify } = require('util');
 const { Validator } = require('jsonschema');
 
 const FILE_PATH = '.kinmock.json';
@@ -22,7 +23,7 @@ const schema = {
   },
 };
 
-exports.create = () => {
+exports.init = async () => {
   const data = {
     domain: '<subdomain>.cybozu.com',
     app: 0,
@@ -30,34 +31,33 @@ exports.create = () => {
     password: '',
   };
 
-  const exists = (path) => {
-    try {
-      fs.accessSync(path);
-      return true;
-    } catch (err) {
-      if (err.code === 'ENOENT') {
-        return false;
-      }
-      throw err;
-    }
+  const exists = async (path) => {
+    const result = await promisify(fs.access)(path)
+      .then(() => true)
+      .catch((err) => {
+        if (err.code === 'ENOENT') {
+          return false;
+        }
+        throw err;
+      });
+    return result;
   };
 
-  if (exists(FILE_PATH)) {
+  if (await exists(FILE_PATH)) {
     throw Error(`${FILE_PATH} already exists.`);
   } else {
-    fs.writeFile(FILE_PATH, JSON.stringify(data, null, '  '), { encoding: ENCODING }, (err) => {
-      if (err) throw err;
+    await promisify(fs.writeFile)(FILE_PATH, JSON.stringify(data, null, '  '), {
+      encoding: ENCODING,
     });
   }
 };
 
-exports.load = () => {
-  const readFile = () => {
-    try {
-      return JSON.parse(fs.readFileSync(FILE_PATH, ENCODING));
-    } catch (err) {
+exports.load = async () => {
+  const readFile = async () => {
+    const json = await promisify(fs.readFile)(FILE_PATH, ENCODING).catch(() => {
       throw Error(`${FILE_PATH} can not read.`);
-    }
+    });
+    return JSON.parse(json);
   };
 
   const validate = (source) => {
@@ -67,7 +67,7 @@ exports.load = () => {
     }
   };
 
-  const config = readFile();
+  const config = await readFile();
   validate(config);
   return config;
 };
