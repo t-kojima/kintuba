@@ -30,7 +30,7 @@ describe('イベント：app.record.index.show', () => {
       actual = event.records[0]['数値'].value;
     });
     kintone.events.do(method);
-    expect(actual).toEqual('777');
+    expect(actual).toEqual('99');
   });
 
   describe('ビュー選択', () => {

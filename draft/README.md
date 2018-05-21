@@ -17,7 +17,7 @@ https://github.com/t-kojima/karma-kinmock
 
 # Warning
 
-kinmockは`require`されるとグローバルの`kintone`オブジェクトを**上書き**します。（これはkintoneにアップロードするJavaScriptファイルをそのままテストできるようにする為です。）
+kinmock は`require`されるとグローバルの`kintone`オブジェクトを**上書き**します。（これは kintone にアップロードする JavaScript ファイルをそのままテストできるようにする為です。）
 
 ローカルでのテストでのみの使用とし、本番環境では使用しないで下さい。
 
@@ -38,12 +38,12 @@ $ yarn add --dev kinmock
 テストコードで`require`して下さい。以後テストコード及びテスト対象コードで`kintone`オブジェクトが利用できます。
 
 ```javascript
-require('kinmock')
+require('kinmock');
 ```
 
 ## イベントの実行
 
-kintoneでは画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので、kinmockではイベントを実行する関数を用意しています。
+kintone では画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので、kinmock ではイベントを実行する関数を用意しています。
 
 `kintone.events.on`でイベントを登録するのに対し、`kintone.events.do`でイベントを実行します。
 
@@ -57,10 +57,24 @@ kintone.events.do('app.record.index.show');
 => event done
 ```
 
+また、レコード詳細画面を開いた場合など、特定の状況を表現する場合は`option`を指定します。
+
+```javascript
+kintone.events.on('app.record.detail.show', (event) => {
+  console.log(event.record.$id.value);
+});
+kintone.events.do('app.record.detail.show', { recordId: '2' });
+
+=> 2
+```
 
 ## テストデータの利用
 
-kintone REST API を利用してアプリの定義を取得し、レコードのデータを作成します。
+kinmock を`require`しただけではデータが存在しない為、`event.records`などにアクセスしても空配列が返ってしまいます。テスト用のデータを取得できるようにする為には、以下の手順で予めテストデータを準備する必要があります。尚、以下の手順では`kintone REST API`を利用して対象アプリの情報を取得します。
+
+### kintone REST API 認証ファイルの作成
+
+`kinmock init`コマンドで認証用テンプレートを作成します。
 
 ```
 $ npx kinmock init
@@ -83,7 +97,9 @@ $ yarn kinmock init
 }
 ```
 
-設定したパラメータを使用し、kintone REST API からアプリ定義を取得します。
+### 対象アプリ情報の取得
+
+作成した認証用ファイルを使用し、kintone REST API からアプリ情報を取得します。
 
 ```
 $ npx kinmock fetch
@@ -97,38 +113,49 @@ $ yarn kinmock fetch
 
 `.kinmock`ディレクトリが作成され、以下のファイルが生成されます。
 
-* fields.json
-* views.json
-* records.json
+* schema
+  * app.json
+  * fields.json
+  * views.json
+  * form.json
+* fixture
+  * login.json
+  * records.json
 
-`records.json`へテストデータを登録します。
+`schema`ディレクトリは kinmock が利用するアプリの設定情報のファイルが生成されます。
+
+`fixture`ディレクトリはテストデータ入力用のテンプレートが生成されます。
+
+### テストデータの入力
+
+`fixture`ディレクトリのテンプレートへテストデータを登録します。
+
+以下は`records.json`の登録例です。`value`にデータを入力します。
 
 ```json
-{
-  "records": [
-    {
-      "$id": {
-        "type": "__ID__",
-        "value": "<ここにテストデータを入力>"
-      },
-      "$revision": {
-        "type": "__REVISION__",
-        "value": "<ここにテストデータを入力>"
-      },
-      "文字列__1行_": {
-        "type": "SINGLE_LINE_TEXT",
-        "value": "<ここにテストデータを入力>"
-      },
-      "数値": {
-        "type": "NUMBER",
-        "value": "<ここにテストデータを入力>"
-      }
+[
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "1"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "文字列__1行_": {
+      "type": "SINGLE_LINE_TEXT",
+      "value": "テストデータ"
+    },
+    "数値": {
+      "type": "NUMBER",
+      "value": "99"
     }
-  ]
-}
+  }
+]
 ```
 
-kinmockでテストデータが利用できます。
+以上、`fixture`ディレクトリのファイルにテストデータを登録することで、kinmockのテストデータが利用できます。
 
 ```javascript
 kintone.events.on('app.record.index.show', (event) => {
@@ -140,7 +167,6 @@ kintone.events.on('app.record.index.show', (event) => {
 
 # examples
 
-
-
 # Licence
+
 MIT License.

@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const fetch = require('node-fetch');
+const { promisify } = require('util');
 const config = require('./config');
 
 const ENCODING = 'utf8';
@@ -11,12 +12,15 @@ exports.fetch = async () => {
     domain, app, username, password,
   } = await config.load();
 
-  const fetchApi = async (method, param) => {
-    const url = `https://${domain}/k/v1/${method}?${param}`;
+  const fetchApi = async (method) => {
+    const url = `https://${domain}/k/v1/${method}`;
     const headers = {
       'X-Cybozu-Authorization': Buffer.from(`${username}:${password}`).toString('base64'),
       Host: `${domain}:443`,
     };
+
+    // eslint-disable-next-line no-console
+    console.info(`Fetch api from ${url}`);
 
     const response = await fetch(url, { headers });
     const json = await response.json();
@@ -29,21 +33,16 @@ exports.fetch = async () => {
 
   const save = async (target, json) => {
     const filename = target.replace(/\//g, '_');
-    await fs.mkdir('.kinmock', () => {});
-    await fs.writeFile(`.kinmock/${filename}`, json, { encoding: ENCODING }, (err) => {
-      if (err) throw err;
-    });
+    await promisify(fs.mkdir)('.kinmock').catch(() => {});
+    await promisify(fs.mkdir)('.kinmock/schema').catch(() => {});
+    await promisify(fs.writeFile)(`.kinmock/schema/${filename}`, json, { encoding: ENCODING });
   };
 
-  const fetchWithSave = async (target, param) => {
-    await fetchApi(target, param)
-      .then(json => save(target, json))
-      .then(() => {
-        // eslint-disable-next-line no-console
-        console.info(`Fetch api ${target}`);
-      });
+  const fetchWithSave = async (args) => {
+    await fetchApi(args.method).then(json => save(args.file, json));
   };
-  await fetchWithSave('app.json', `id=${app}`);
-  await fetchWithSave('app/views.json', `app=${app}`);
-  await fetchWithSave('form.json', `app=${app}`);
+  await fetchWithSave({ method: `app.json?id=${app}`, file: 'app.json' });
+  await fetchWithSave({ method: `app/views.json?app=${app}`, file: 'views.json' });
+  await fetchWithSave({ method: `form.json?app=${app}`, file: 'form.json' });
+  await fetchWithSave({ method: `app/form/fields.json?app=${app}`, file: 'fields.json' });
 };
