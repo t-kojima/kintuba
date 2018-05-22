@@ -1,30 +1,240 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function (global){
 const { EventEmitter } = require('events');
+const settings = require('./settings');
+
+const DEFAULT_VIEW_ID = '20';
+
+class EventObject {
+  constructor(event) {
+    this.appId = settings.app.appId;
+    this.type = event;
+  }
+}
+
+class RecordEventObject extends EventObject {
+  constructor(event, options = { recordId: '1' }) {
+    super(event);
+
+    const record = settings.records.find(a => a.$id.value === options.recordId);
+    this.recordId = record ? record.$id.value : '0';
+    this.record = record || {};
+  }
+}
+
+class RecordChangeEventObject extends RecordEventObject {
+  constructor(event, options = { recordId: '1' }, type) {
+    super(event, options);
+
+    this.changes = {
+      field: {
+        type,
+        value: 'value' in options ? options.value : '',
+      },
+      row: {},
+    };
+  }
+}
+
+class RecordsEventObject extends EventObject {
+  constructor(event, options = {}) {
+    super(event);
+
+    this.date = null;
+    this.offset = 0;
+
+    const { views } = settings.views;
+    const view = Object.keys(views)
+      .map(key => views[key])
+      .find(item => item.id === options.viewId);
+    this.viewId = view ? view.id : DEFAULT_VIEW_ID;
+    this.viewName = view ? view.name : '（すべて）';
+    this.viewType = view ? view.type.toLowerCase() : 'list';
+
+    this.size = settings.records.length;
+    this.records = settings.records;
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+const app = {
+  record: {
+    index: {
+      show: (event, options) => new RecordsEventObject(event, options),
+      edit: {
+        show: (event, options) => new RecordEventObject(event, options),
+        submit: (event, options) => new RecordEventObject(event, options),
+        change: {},
+      },
+      delete: {
+        submit: (event, options) => new RecordEventObject(event, options),
+      },
+    },
+  },
+  report: {
+    show: () => {},
+  },
+};
+
+// 関数に関数を定義する
+app.record.index.edit.submit.success = (event, options) => new RecordEventObject(event, options);
+
+// fields項目の関数を定義する
+Object.keys(settings.fields.properties).forEach((key) => {
+  const prop = settings.fields.properties[key];
+  app.record.index.edit.change[key] = (event, options) =>
+    new RecordChangeEventObject(event, options, prop.type);
+});
 
 module.exports = class Event extends EventEmitter {
-  do(event) {
-    this.emit(event, 'events');
+  emit(event, ...args) {
+    const promises = [];
+    this.listeners(event).forEach((listener) => {
+      promises.push(listener(...args));
+    });
+    return Promise.all(promises);
+  }
+
+  async do(event, options) {
+    global.kintone.location = event;
+    if (
+      event.match(/^app\.(record|report)(\.(index|detail))?(\.(create|edit|delete|print))?(\.(show|change|submit|process))?(\.(success|proceed))?(\..+)?$/)
+    ) {
+      // eslint-disable-next-line no-eval
+      const func = eval(`${event}`);
+      if (typeof func === 'function') {
+        // 複数ハンドラ登録されていた場合、最後のみ反映させる為popする
+        const resolve = (await this.emit(event, func(event, options))).pop();
+        if (event === 'app.record.index.delete.submit' && resolve && resolve.recordId !== '0') {
+          settings.records = settings.records.filter(r => r.$id.value !== resolve.record.$id.value);
+        }
+        return resolve;
+      }
+      // eslint-disable-next-line no-console
+      console.warn(`\nmissing event : ${event}`);
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn(`\nno match event : ${event}`);
+    }
+    return null;
+  }
+
+  off(event) {
+    this.removeAllListeners(event);
   }
 };
 
-},{"events":3}],2:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./settings":3,"events":5}],2:[function(require,module,exports){
 (function (global){
 /* eslint-disable no-undef */
-
+const settings = require('./settings');
 const Event = require('./event');
 
 const app = {
   getId: () => 1,
   getHeaderMenuSpaceElement: () => document.body,
+  getFieldElements: () => {},
+  getHeaderSpaceElement: () => {},
+  getLookupTargetAppId: () => {},
+  getQuery: () => {},
+  getQueryCondition: () => {},
+  getRelatedRecordsTargetAppId: () => {},
+  record: () => {},
+};
+
+const api = {
+  getConcurrencyLimit: () => {},
 };
 
 global.kintone = {
   app,
+  api,
   events: new Event(),
+  getLoginUser: () => settings.login,
+  getUiVersion: () => 2,
+  location: null,
+  reset: () => {
+    // eslint-disable-next-line no-console
+    console.info('reset kintone fixtures');
+    settings.reset();
+  },
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./event":1}],3:[function(require,module,exports){
+},{"./event":1,"./settings":3}],3:[function(require,module,exports){
+
+
+const fs = require('fs');
+
+const DIR_SCHEMA = '.kinmock/schema';
+const DIR_FIXTURE = '.kinmock/fixture';
+const ENCODING = 'utf8';
+
+const loadFile = (filePath, defaults) => {
+  try {
+    // eslint-disable-next-line no-console
+    console.info(`Load setting : ${filePath}`);
+    return JSON.parse(fs.readFileSync(filePath, ENCODING));
+  } catch (err) {
+    return defaults;
+  }
+};
+
+// アプリ情報
+exports.app = (() =>
+  loadFile(`${DIR_SCHEMA}/app.json`, {
+    appId: '0',
+    code: '',
+    name: '',
+    description: '',
+    createdAt: '',
+    creator: {
+      code: '',
+      name: '',
+    },
+    modifiedAt: '',
+    modifier: {
+      code: '',
+      name: '',
+    },
+    spaceId: null,
+    threadId: null,
+  }))();
+
+// ビューデータ
+exports.views = (() => loadFile(`${DIR_SCHEMA}/views.json`, {}))();
+
+// フィールドデータ
+exports.fields = (() => loadFile(`${DIR_SCHEMA}/fields.json`, {}))();
+
+// ログイン情報
+exports.login = (() =>
+  loadFile(`${DIR_FIXTURE}/login.json`, {
+    id: '',
+    code: '',
+    name: '',
+    email: '',
+    url: '',
+    employeeNumber: '',
+    phone: '',
+    mobilePhone: '',
+    extensionNumber: '',
+    timezone: '',
+    isGuest: false,
+    language: '',
+  }))();
+
+// レコードデータ
+exports.records = (() => loadFile(`${DIR_FIXTURE}/records.json`, []))();
+
+exports.reset = () => {
+  this.records = (() => loadFile(`${DIR_FIXTURE}/records.json`, []))();
+};
+
+},{"fs":4}],4:[function(require,module,exports){
+
+},{}],5:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
