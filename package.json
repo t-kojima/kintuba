@@ -7,7 +7,9 @@
   "author": "t-kojima <t-kojima@skullware.net>",
   "license": "MIT",
   "private": true,
-  "keywords": ["kintone"],
+  "keywords": [
+    "kintone"
+  ],
   "homepage": "https://github.com/t-kojima/kinmock",
   "bugs": {
     "url": "https://github.com/t-kojima/kinmock/issues"
@@ -17,17 +19,20 @@
   },
   "devDependencies": {
     "browserify": "^16.2.2",
+    "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.8.2",
-    "jasmine-node": "^1.14.5",
+    "mocha": "^5.2.0",
     "prettier": "^1.12.1"
   },
   "eslintConfig": {
     "extends": "airbnb",
-    "plugins": ["import"]
+    "plugins": [
+      "import"
+    ]
   },
   "dependencies": {
     "cac": "^5.0.10",
@@ -38,6 +43,6 @@
     "kinmock": "./bin/kinmock"
   },
   "scripts": {
-    "test": "jasmine-node spec"
+    "test": "mocha test"
   }
 }
