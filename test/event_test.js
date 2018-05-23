@@ -131,26 +131,38 @@ describe('app.record.index.delete.submit', () => {
     kintone.events.off(showMethod);
   });
 
-  it('レコードが削除されること', async () => {
-    kintone.events.on(delMethod, event => event);
-    await kintone.events.do(delMethod, { recordId: '1' });
+  describe('return event;', () => {
+    it('レコードが削除されること', async () => {
+      kintone.events.on(delMethod, event => event);
+      await kintone.events.do(delMethod, { recordId: '1' });
 
-    kintone.events.on(showMethod, event => event);
-    const event = await kintone.events.do(showMethod);
+      kintone.events.on(showMethod, event => event);
+      const event = await kintone.events.do(showMethod);
+      assert.equal(event.size, 2);
+    });
 
-    assert.equal(event.size, 2);
+    it('削除結果が次のテストに波及すること', async () => {
+      kintone.events.on(showMethod, event => event);
+      const event = await kintone.events.do(showMethod);
+      assert.equal(event.size, 2);
+    });
+
+    it('削除結果がリセットされること', async () => {
+      kintone.settings.resetData();
+      kintone.events.on(showMethod, event => event);
+      const event = await kintone.events.do(showMethod);
+      assert.equal(event.size, 3);
+    });
   });
 
-  it('削除結果が次のテストに波及すること', async () => {
-    kintone.events.on(showMethod, event => event);
-    const event = await kintone.events.do(showMethod);
-    assert.equal(event.size, 2);
-  });
+  describe('return false;', () => {
+    it('レコードが削除されないこと', async () => {
+      kintone.events.on(delMethod, () => false);
+      await kintone.events.do(delMethod, { recordId: '1' });
 
-  it('削除結果がリセットされること', async () => {
-    kintone.reset();
-    kintone.events.on(showMethod, event => event);
-    const event = await kintone.events.do(showMethod);
-    assert.equal(event.size, 3);
+      kintone.events.on(showMethod, event => event);
+      const event = await kintone.events.do(showMethod);
+      assert.equal(event.size, 3);
+    });
   });
 });
