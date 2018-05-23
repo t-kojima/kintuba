@@ -1,0 +1,6 @@
+.kinmock/
+.vscode/
+lib/
+test/
+.travis.yml
+yarn.lock
