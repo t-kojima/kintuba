@@ -4,8 +4,8 @@ const { assert } = require('chai');
 
 describe('.kinmockディレクトリが無い場合', () => {
   before(() => {
-    kintone.loadSchema();
-    kintone.loadFixture();
+    kintone.loadSchema('.');
+    kintone.loadFixture('.');
   });
 
   after(() => {
