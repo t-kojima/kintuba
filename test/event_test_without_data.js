@@ -1,18 +1,15 @@
 /* eslint-disable no-undef */
 require('../lib');
-const settings = require('../lib/settings');
 const { assert } = require('chai');
 
 describe('.kinmockディレクトリが無い場合', () => {
   before(() => {
-    settings.app = {};
-    settings.views = {};
-    settings.fields = {};
-    kintone.settings.loadFixture();
+    kintone.loadSchema();
+    kintone.loadFixture();
   });
 
   after(() => {
-    kintone.settings.loadDefault();
+    kintone.loadDefault();
   });
 
   describe('app.record.index.show', () => {

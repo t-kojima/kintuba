@@ -148,7 +148,7 @@ describe('app.record.index.delete.submit', () => {
     });
 
     it('削除結果がリセットされること', async () => {
-      kintone.settings.loadDefault();
+      kintone.loadDefault();
       kintone.events.on(showMethod, event => event);
       const event = await kintone.events.do(showMethod);
       assert.equal(event.size, 3);

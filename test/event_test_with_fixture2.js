@@ -3,8 +3,8 @@ require('../lib');
 const { assert } = require('chai');
 
 describe('fixture2 を読み込んだ場合', () => {
-  before(() => kintone.settings.loadFixture('.kinmock/fixture2'));
-  after(() => kintone.settings.loadDefault());
+  before(() => kintone.loadFixture('.kinmock/fixture2'));
+  after(() => kintone.loadDefault());
 
   describe('app.record.index.show', () => {
     const method = 'app.record.index.show';
