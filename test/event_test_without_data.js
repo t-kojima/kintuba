@@ -56,15 +56,15 @@ describe('.kinmockディレクトリが無い場合', () => {
     it('未指定の場合、id=1が取得できないこと', async () => {
       kintone.events.on(method, event => event);
       const event = await kintone.events.do(method);
-      assert.equal(event.recordId, '0');
-      assert.deepEqual(event.record, {});
+      assert.isUndefined(event.recordId);
+      assert.isUndefined(event.record);
     });
 
-    it('データが存在しない場合、id=0が取得されること', async () => {
+    it('データが存在しない場合、undefinedが取得されること', async () => {
       kintone.events.on(method, event => event);
       const event = await kintone.events.do(method, { recordId: '999' });
-      assert.equal(event.recordId, '0');
-      assert.deepEqual(event.record, {});
+      assert.isUndefined(event.recordId);
+      assert.isUndefined(event.record);
     });
   });
 

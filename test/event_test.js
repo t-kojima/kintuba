@@ -50,11 +50,11 @@ describe('app.record.index.edit.show', () => {
     assert.equal(event.record.$id.value, '1');
   });
 
-  it('データが存在しない場合、id=0が取得されること', async () => {
+  it('データが存在しない場合、undefinedが取得されること', async () => {
     kintone.events.on(method, event => event);
     const event = await kintone.events.do(method, { recordId: '999' });
-    assert.equal(event.recordId, '0');
-    assert.deepEqual(event.record, {});
+    assert.isUndefined(event.recordId);
+    assert.isUndefined(event.record);
   });
 
   it('データが存在する場合、指定のデータが取得されること', async () => {
