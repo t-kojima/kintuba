@@ -8,11 +8,12 @@ describe('.kinmockディレクトリが無い場合', () => {
     settings.app = {};
     settings.views = {};
     settings.fields = {};
-    settings.login = {};
-    settings.records = [];
+    kintone.settings.loadFixture();
   });
 
-  after(() => kintone.settings.resetData());
+  after(() => {
+    kintone.settings.loadDefault();
+  });
 
   describe('app.record.index.show', () => {
     const method = 'app.record.index.show';

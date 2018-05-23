@@ -4,7 +4,7 @@ const { assert } = require('chai');
 
 describe('app.record.index.show', () => {
   const method = 'app.record.index.show';
-  beforeEach(() => kintone.events.off(method));
+  afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
@@ -41,7 +41,7 @@ describe('app.record.index.show', () => {
 
 describe('app.record.index.edit.show', () => {
   const method = 'app.record.index.edit.show';
-  beforeEach(() => kintone.events.off(method));
+  afterEach(() => kintone.events.off(method));
 
   it('未指定の場合、id=1が取得されること', async () => {
     kintone.events.on(method, event => event);
@@ -67,7 +67,7 @@ describe('app.record.index.edit.show', () => {
 
 describe('app.record.index.edit.submit', () => {
   const method = 'app.record.index.edit.submit';
-  beforeEach(() => kintone.events.off(method));
+  afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
@@ -77,7 +77,7 @@ describe('app.record.index.edit.submit', () => {
 
   describe('.success', () => {
     const success = 'app.record.index.edit.submit.success';
-    beforeEach(() => kintone.events.off(success));
+    afterEach(() => kintone.events.off(success));
 
     it('イベントが発火すること', async () => {
       kintone.events.on(success, event => event);
@@ -89,7 +89,7 @@ describe('app.record.index.edit.submit', () => {
 
 describe('app.record.index.edit.change.<フィールド>', () => {
   const method = 'app.record.index.edit.change.数値';
-  beforeEach(() => kintone.events.off(method));
+  afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
@@ -126,7 +126,7 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 describe('app.record.index.delete.submit', () => {
   const delMethod = 'app.record.index.delete.submit';
   const showMethod = 'app.record.index.show';
-  beforeEach(() => {
+  afterEach(() => {
     kintone.events.off(delMethod);
     kintone.events.off(showMethod);
   });
@@ -148,7 +148,7 @@ describe('app.record.index.delete.submit', () => {
     });
 
     it('削除結果がリセットされること', async () => {
-      kintone.settings.resetData();
+      kintone.settings.loadDefault();
       kintone.events.on(showMethod, event => event);
       const event = await kintone.events.do(showMethod);
       assert.equal(event.size, 3);
