@@ -101,14 +101,43 @@ describe('app.record.index.show', () => {
     });
   });
 
-  describe('fixture2 を読み込んだ場合', () => {
-    before(() => kintone.loadFixture('.kinmock/fixture2'));
+  describe('handred を読み込んだ場合', () => {
+    before(() => kintone.loadFixture('.kinmock/handred'));
     after(() => kintone.loadDefault());
 
-    it('テストデータが取得できること', async () => {
+    it('取得件数が100であること', async () => {
       kintone.events.on(method, event => event);
       const event = await kintone.events.do(method);
-      assert.equal(event.records[0]['数値'].value, '77');
+      assert.equal(event.size, 100);
+    });
+
+    describe('offset=20', () => {
+      it('取得件数が81で先頭IDが21であること', async () => {
+        kintone.events.on(method, event => event);
+        const event = await kintone.events.do(method, { offset: 20 });
+        assert.equal(event.size, 81);
+        assert.equal(event.records[0].$id.value, '21');
+      });
+    });
+
+    describe('limit=40', () => {
+      it('取得件数が40で先頭IDが1であること', async () => {
+        kintone.events.on(method, event => event);
+        const event = await kintone.events.do(method, { limit: 40 });
+        assert.equal(event.size, 40);
+        assert.equal(event.records[0].$id.value, '1');
+      });
+    });
+
+    describe('offset=20 and limit=40', () => {
+      it('取得件数が40かつoffset=20で先頭IDが21、最終IDが60であること', async () => {
+        kintone.events.on(method, event => event);
+        const event = await kintone.events.do(method, { offset: 20, limit: 40 });
+        assert.equal(event.offset, 20);
+        assert.equal(event.size, 40);
+        assert.equal(event.records[0].$id.value, '21');
+        assert.equal(event.records[40 - 1].$id.value, '60');
+      });
     });
   });
 });
