@@ -1,5 +1,5 @@
 {
-  "revision": "23",
+  "revision": "33",
   "properties": {
     "レコード番号": {
       "type": "RECORD_NUMBER",

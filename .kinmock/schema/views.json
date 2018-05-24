@@ -14,13 +14,15 @@
       "type": "LIST",
       "name": "一覧1",
       "id": "5519903",
-      "filterCond": "",
+      "filterCond": "数値 >= \"1000\" and 文字列__1行_ not like \"NGWORD\"",
       "sort": "レコード番号 desc",
       "index": "0",
       "fields": [
-        "レコード番号"
+        "レコード番号",
+        "文字列__1行_",
+        "数値"
       ]
     }
   },
-  "revision": "23"
+  "revision": "33"
 }

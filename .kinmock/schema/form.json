@@ -1,6 +1,36 @@
 {
   "properties": [
     {
+      "type": "RECORD_NUMBER",
+      "label": "レコード番号",
+      "noLabel": "false",
+      "code": "レコード番号"
+    },
+    {
+      "type": "MODIFIER",
+      "label": "更新者",
+      "noLabel": "false",
+      "code": "更新者"
+    },
+    {
+      "type": "CREATOR",
+      "label": "作成者",
+      "noLabel": "false",
+      "code": "作成者"
+    },
+    {
+      "type": "UPDATED_TIME",
+      "label": "更新日時",
+      "noLabel": "false",
+      "code": "更新日時"
+    },
+    {
+      "type": "CREATED_TIME",
+      "label": "作成日時",
+      "noLabel": "false",
+      "code": "作成日時"
+    },
+    {
       "type": "SINGLE_LINE_TEXT",
       "label": "文字列 (1行)",
       "noLabel": "false",
