@@ -1,0 +1,218 @@
+[
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "1"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "1"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": ""
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": ""
+    }
+  },
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "2"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "2"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": null
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": null
+    }
+  },
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "3"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "3"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": "2018-06-18T03:07:00Z"
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": "2018-06-18T03:07:00Z"
+    }
+  },
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "4"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "4"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    }
+  },
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "5"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "5"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    }
+  },
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "6"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "6"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": "2018-05-19T03:07:00Z"
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": "2018-05-19T03:07:00Z"
+    }
+  }
+]
