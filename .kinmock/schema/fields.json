@@ -1,17 +1,11 @@
 {
-  "revision": "33",
+  "revision": "39",
   "properties": {
     "レコード番号": {
       "type": "RECORD_NUMBER",
       "code": "レコード番号",
       "label": "レコード番号",
       "noLabel": false
-    },
-    "作業者": {
-      "type": "STATUS_ASSIGNEE",
-      "code": "作業者",
-      "label": "作業者",
-      "enabled": false
     },
     "リッチエディター": {
       "type": "RICH_TEXT",
@@ -25,12 +19,6 @@
       "type": "MODIFIER",
       "code": "更新者",
       "label": "更新者",
-      "noLabel": false
-    },
-    "作成者": {
-      "type": "CREATOR",
-      "code": "作成者",
-      "label": "作成者",
       "noLabel": false
     },
     "文字列__1行_": {
@@ -51,6 +39,145 @@
       "code": "ステータス",
       "label": "ステータス",
       "enabled": false
+    },
+    "ユーザー選択": {
+      "type": "USER_SELECT",
+      "code": "ユーザー選択",
+      "label": "ユーザー選択",
+      "noLabel": false,
+      "required": false,
+      "entities": [],
+      "defaultValue": []
+    },
+    "文字列__1行__AUTO_CALC": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "文字列__1行__AUTO_CALC",
+      "label": "文字列 (1行)（自動計算）",
+      "noLabel": false,
+      "required": false,
+      "minLength": "",
+      "maxLength": "",
+      "expression": "数値",
+      "hideExpression": false,
+      "unique": false,
+      "defaultValue": ""
+    },
+    "カテゴリー": {
+      "type": "CATEGORY",
+      "code": "カテゴリー",
+      "label": "カテゴリー",
+      "enabled": false
+    },
+    "文字列__複数行_": {
+      "type": "MULTI_LINE_TEXT",
+      "code": "文字列__複数行_",
+      "label": "文字列 (複数行)",
+      "noLabel": false,
+      "required": false,
+      "defaultValue": ""
+    },
+    "ルックアップ": {
+      "type": "SINGLE_LINE_TEXT",
+      "code": "ルックアップ",
+      "label": "ルックアップ",
+      "noLabel": false,
+      "required": false,
+      "lookup": {
+        "relatedApp": {
+          "app": "5",
+          "code": ""
+        },
+        "relatedKeyField": "company",
+        "fieldMappings": [
+          {
+            "field": "文字列__1行_",
+            "relatedField": "company"
+          }
+        ],
+        "lookupPickerFields": [
+          "division"
+        ],
+        "filterCond": "",
+        "sort": "record_no desc"
+      }
+    },
+    "計算": {
+      "type": "CALC",
+      "code": "計算",
+      "label": "計算",
+      "noLabel": false,
+      "required": false,
+      "expression": "数値 * 10",
+      "format": "NUMBER",
+      "displayScale": "",
+      "hideExpression": false,
+      "unit": "",
+      "unitPosition": "BEFORE"
+    },
+    "日付": {
+      "type": "DATE",
+      "code": "日付",
+      "label": "日付",
+      "noLabel": false,
+      "required": false,
+      "unique": false,
+      "defaultValue": "",
+      "defaultNowValue": true
+    },
+    "作業者": {
+      "type": "STATUS_ASSIGNEE",
+      "code": "作業者",
+      "label": "作業者",
+      "enabled": false
+    },
+    "Table": {
+      "type": "SUBTABLE",
+      "code": "Table",
+      "fields": {
+        "文字列__1行__Table": {
+          "type": "SINGLE_LINE_TEXT",
+          "code": "文字列__1行__Table",
+          "label": "文字列 (1行)（テーブル）",
+          "noLabel": false,
+          "required": false,
+          "minLength": "",
+          "maxLength": "",
+          "expression": "",
+          "hideExpression": false,
+          "unique": false,
+          "defaultValue": ""
+        },
+        "数値_Table": {
+          "type": "NUMBER",
+          "code": "数値_Table",
+          "label": "数値（テーブル）",
+          "noLabel": false,
+          "required": false,
+          "minValue": "",
+          "maxValue": "",
+          "digit": false,
+          "unique": false,
+          "defaultValue": "",
+          "displayScale": "",
+          "unit": "",
+          "unitPosition": "BEFORE"
+        }
+      }
+    },
+    "グループ選択": {
+      "type": "GROUP_SELECT",
+      "code": "グループ選択",
+      "label": "グループ選択",
+      "noLabel": false,
+      "required": false,
+      "entities": [],
+      "defaultValue": []
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "code": "作成者",
+      "label": "作成者",
+      "noLabel": false
     },
     "ラジオボタン": {
       "type": "RADIO_BUTTON",
@@ -89,17 +216,20 @@
       },
       "defaultValue": ""
     },
+    "組織選択": {
+      "type": "ORGANIZATION_SELECT",
+      "code": "組織選択",
+      "label": "組織選択",
+      "noLabel": false,
+      "required": false,
+      "entities": [],
+      "defaultValue": []
+    },
     "更新日時": {
       "type": "UPDATED_TIME",
       "code": "更新日時",
       "label": "更新日時",
       "noLabel": false
-    },
-    "カテゴリー": {
-      "type": "CATEGORY",
-      "code": "カテゴリー",
-      "label": "カテゴリー",
-      "enabled": false
     },
     "日時": {
       "type": "DATETIME",
@@ -110,6 +240,28 @@
       "unique": false,
       "defaultValue": "",
       "defaultNowValue": true
+    },
+    "関連レコード一覧": {
+      "type": "REFERENCE_TABLE",
+      "code": "関連レコード一覧",
+      "label": "関連レコード一覧",
+      "noLabel": false,
+      "referenceTable": {
+        "relatedApp": {
+          "app": "2",
+          "code": ""
+        },
+        "condition": {
+          "field": "文字列__1行_",
+          "relatedField": "文字列__1行_"
+        },
+        "filterCond": "",
+        "displayFields": [
+          "文字列__1行_"
+        ],
+        "sort": "レコード番号 desc",
+        "size": "5"
+      }
     },
     "時刻": {
       "type": "TIME",
@@ -138,14 +290,6 @@
       },
       "defaultValue": [],
       "align": "HORIZONTAL"
-    },
-    "文字列__複数行_": {
-      "type": "MULTI_LINE_TEXT",
-      "code": "文字列__複数行_",
-      "label": "文字列 (複数行)",
-      "noLabel": false,
-      "required": false,
-      "defaultValue": ""
     },
     "複数選択": {
       "type": "MULTI_SELECT",
@@ -201,29 +345,6 @@
       "code": "作成日時",
       "label": "作成日時",
       "noLabel": false
-    },
-    "計算": {
-      "type": "CALC",
-      "code": "計算",
-      "label": "計算",
-      "noLabel": false,
-      "required": false,
-      "expression": "数値 * 10",
-      "format": "NUMBER",
-      "displayScale": "",
-      "hideExpression": false,
-      "unit": "",
-      "unitPosition": "BEFORE"
-    },
-    "日付": {
-      "type": "DATE",
-      "code": "日付",
-      "label": "日付",
-      "noLabel": false,
-      "required": false,
-      "unique": false,
-      "defaultValue": "",
-      "defaultNowValue": true
     }
   }
 }
