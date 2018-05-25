@@ -8,7 +8,7 @@ describe('app.record.index.edit.submit', () => {
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method);
+    const event = await kintone.events.do(method, { recordId: '1' });
     assert.equal(event.type, method);
   });
 
@@ -18,7 +18,7 @@ describe('app.record.index.edit.submit', () => {
 
     it('イベントが発火すること', async () => {
       kintone.events.on(success, event => event);
-      const event = await kintone.events.do(success);
+      const event = await kintone.events.do(success, { recordId: '1' });
       assert.equal(event.type, success);
     });
   });
@@ -32,7 +32,7 @@ describe('app.record.index.edit.submit', () => {
 
     it('イベントが発火すること', async () => {
       kintone.events.on(method, event => event);
-      const event = await kintone.events.do(method);
+      const event = await kintone.events.do(method, { recordId: '1' });
       assert.equal(event.type, method);
     });
 
@@ -42,7 +42,7 @@ describe('app.record.index.edit.submit', () => {
 
       it('イベントが発火すること', async () => {
         kintone.events.on(success, event => event);
-        const event = await kintone.events.do(success);
+        const event = await kintone.events.do(success, { recordId: '1' });
         assert.equal(event.type, success);
       });
     });

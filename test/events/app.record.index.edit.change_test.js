@@ -8,13 +8,13 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method);
+    const event = await kintone.events.do(method, { recordId: '1', value: '99' });
     assert.equal(event.type, method);
   });
 
   it('field.typeが取得できること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method);
+    const event = await kintone.events.do(method, { recordId: '1', value: '99' });
     assert.equal(event.changes.field.type, 'NUMBER');
   });
 
@@ -30,24 +30,49 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     assert.equal(event.record.数値.value, '999');
   });
 
-  it('idが未指定の場合はid=1になること', async () => {
+  it('idが未指定の場合はErrorになること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method);
-    assert.equal(event.recordId, '1');
+    await kintone.events
+      .do(method)
+      .then(() => assert.fail())
+      .catch(e => assert.equal(e.message, 'recordId option is required.'));
+  });
+
+  it('valueが未指定の場合はErrorになること', async () => {
+    kintone.events.on(method, event => event);
+    await kintone.events
+      .do(method, { recordId: '1' })
+      .then(() => assert.fail())
+      .catch(e => assert.equal(e.message, 'value option is required.'));
   });
 
   it('存在しないフィールドは動作しないこと', async () => {
     const unknown = 'app.record.index.edit.change.存在しないフィールド';
     kintone.events.on(unknown, event => event);
-    const event = await kintone.events.do(unknown);
+    const event = await kintone.events.do(unknown, { recordId: '1', value: '999' });
     assert.isNull(event);
   });
 
   it('許可されないフィールドは動作しないこと', async () => {
     const disallow = 'app.record.index.edit.change.文字列__複数行_';
     kintone.events.on(disallow, event => event);
-    const event = await kintone.events.do(disallow);
+    const event = await kintone.events.do(disallow, { recordId: '1', value: '999' });
     assert.isNull(event);
+  });
+
+  describe('returnしない場合', () => {
+    it('設定したvalueが反映されないこと', async () => {
+      let before;
+      kintone.events.on(method, (event) => {
+        before = event.record.数値.value;
+        event.record.数値.value = '777';
+      });
+      await kintone.events.do(method, { recordId: '1', value: '999' });
+
+      kintone.events.on('app.record.index.edit.show', event => event);
+      const event = await kintone.events.do('app.record.index.edit.show', { recordId: '1' });
+      assert.equal(event.record.数値.value, before);
+    });
   });
 
   describe('ラジオボタンの場合', () => {
@@ -98,7 +123,7 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
     it('イベントが発火しないこと', async () => {
       kintone.events.on(method, event => event);
-      const event = await kintone.events.do(method);
+      const event = await kintone.events.do(method, { recordId: '1', value: '999' });
       assert.isNull(event);
     });
   });

@@ -6,11 +6,12 @@ describe('app.record.index.edit.show', () => {
   const method = 'app.record.index.edit.show';
   afterEach(() => kintone.events.off(method));
 
-  it('idが未指定の場合、id=1が取得されること', async () => {
+  it('idが未指定の場合Errorになること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method);
-    assert.equal(event.recordId, '1');
-    assert.equal(event.record.$id.value, '1');
+    await kintone.events
+      .do(method)
+      .then(() => assert.fail())
+      .catch(e => assert.equal(e.message, 'recordId option is required.'));
   });
 
   it('存在しないidを指定した場合、undefinedが取得されること', async () => {
@@ -27,6 +28,17 @@ describe('app.record.index.edit.show', () => {
     assert.equal(event.record.$id.value, '2');
   });
 
+  it('valueを書き換えたとき反映されること', async () => {
+    kintone.events.on(method, (event) => {
+      event.record.数値.value = '999';
+      return event;
+    });
+    kintone.events.on(method, event => event);
+
+    const event = await kintone.events.do(method, { recordId: '1' });
+    assert.equal(event.record.数値.value, '999');
+  });
+
   describe('.kinmockディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');
@@ -34,11 +46,12 @@ describe('app.record.index.edit.show', () => {
     });
     after(() => kintone.loadDefault());
 
-    it('idが未指定の場合、undefinedが取得されること', async () => {
+    it('idが未指定の場合Errorになること', async () => {
       kintone.events.on(method, event => event);
-      const event = await kintone.events.do(method);
-      assert.isUndefined(event.recordId);
-      assert.isUndefined(event.record);
+      await kintone.events
+        .do(method)
+        .then(() => assert.fail())
+        .catch(e => assert.equal(e.message, 'recordId option is required.'));
     });
 
     it('存在しないidを指定した場合、undefinedが取得されること', async () => {
@@ -53,11 +66,12 @@ describe('app.record.index.edit.show', () => {
     before(() => kintone.loadFixture('.kinmock/fixture2'));
     after(() => kintone.loadDefault());
 
-    it('idが未指定の場合、id=1が取得されること', async () => {
+    it('idが未指定の場合Errorになること', async () => {
       kintone.events.on(method, event => event);
-      const event = await kintone.events.do(method);
-      assert.equal(event.recordId, '1');
-      assert.equal(event.record.$id.value, '1');
+      await kintone.events
+        .do(method)
+        .then(() => assert.fail())
+        .catch(e => assert.equal(e.message, 'recordId option is required.'));
     });
 
     it('存在しないidを指定した場合、undefinedが取得されること', async () => {

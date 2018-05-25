@@ -20,7 +20,7 @@ describe('app.record', () => {
 
     it('kintone.app.record.get()がnullであること', async () => {
       kintone.events.on(method, event => event);
-      await kintone.events.do(method);
+      await kintone.events.do(method, { recordId: '1' });
       assert.isNull(kintone.app.record.get());
     });
   });
@@ -31,7 +31,7 @@ describe('app.record', () => {
 
     it('kintone.app.record.get()が取得できること', async () => {
       kintone.events.on(method, event => event);
-      await kintone.events.do(method);
+      await kintone.events.do(method, { recordId: '1' });
       const record = kintone.app.record.get();
       assert.equal(record.record['数値'].value, '99');
     });
@@ -44,7 +44,7 @@ describe('app.record', () => {
 
     it('kintone.app.record.set()で値が反映されること', async () => {
       kintone.events.on(method, event => event);
-      await kintone.events.do(method);
+      await kintone.events.do(method, { recordId: '1' });
 
       const record = kintone.app.record.get();
       record.record['数値'].value = '77';
@@ -70,7 +70,7 @@ describe('app.record', () => {
 
       it('kintone.app.record.get()がnullであること', async () => {
         kintone.events.on(method, event => event);
-        await kintone.events.do(method);
+        await kintone.events.do(method, { recordId: '1' });
         assert.isNull(kintone.app.record.get());
       });
 
