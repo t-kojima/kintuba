@@ -28,15 +28,19 @@ describe('app.record.index.edit.show', () => {
     assert.equal(event.record.$id.value, '2');
   });
 
-  it('valueを書き換えたとき反映されること', async () => {
+  it('valueを書き換えたとき反映されないこと', async () => {
+    let before;
     kintone.events.on(method, (event) => {
+      before = event.record.数値.value;
       event.record.数値.value = '999';
       return event;
     });
-    kintone.events.on(method, event => event);
+    await kintone.events.do(method, { recordId: '1' });
+    kintone.events.off(method);
 
+    kintone.events.on(method, event => event);
     const event = await kintone.events.do(method, { recordId: '1' });
-    assert.equal(event.record.数値.value, '999');
+    assert.equal(event.record.数値.value, before);
   });
 
   describe('.kinmockディレクトリが無い場合', () => {

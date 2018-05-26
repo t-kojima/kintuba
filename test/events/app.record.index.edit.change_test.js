@@ -26,7 +26,13 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   it('設定したvalueが反映されること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method, { recordId: '1', value: '999' });
+    await kintone.events.do(method, { recordId: '1', value: '999' });
+    kintone.events.off(method);
+
+    const show = 'app.record.index.edit.show';
+    kintone.events.on(show, event => event);
+    const event = await kintone.events.do(show, { recordId: '1' });
+    kintone.events.off(show);
     assert.equal(event.record.数値.value, '999');
   });
 
@@ -69,8 +75,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
       });
       await kintone.events.do(method, { recordId: '1', value: '999' });
 
-      kintone.events.on('app.record.index.edit.show', event => event);
-      const event = await kintone.events.do('app.record.index.edit.show', { recordId: '1' });
+      const show = 'app.record.index.edit.show';
+      kintone.events.on(show, event => event);
+      const event = await kintone.events.do(show, { recordId: '1' });
+      kintone.events.off(show);
       assert.equal(event.record.数値.value, before);
     });
   });

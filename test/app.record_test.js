@@ -60,9 +60,7 @@ describe('app.record', () => {
       kintone.loadFixture('.');
     });
 
-    after(() => {
-      kintone.loadDefault();
-    });
+    after(() => kintone.loadDefault());
 
     describe('app.record.detail.show', () => {
       const method = 'app.record.detail.show';
