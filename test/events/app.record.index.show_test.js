@@ -26,6 +26,8 @@ describe('app.record.index.show', () => {
     });
   });
 
+  xit('recordsのフィールドを変更した時、反映されないこと', async () => {});
+
   describe('カレンダービュー', () => {
     before(() => kintone.loadFixture('.kinmock/calendar'));
     after(() => kintone.loadDefault());

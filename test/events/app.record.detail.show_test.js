@@ -28,7 +28,7 @@ describe('app.record.detail.show', () => {
     assert.equal(event.record.$id.value, '2');
   });
 
-  it('valueを書き換えたとき反映されないこと', async () => {
+  it('recordのフィールドを書き換えたとき反映されないこと', async () => {
     let before;
     kintone.events.on(method, (event) => {
       before = event.record.数値.value;

@@ -1,5 +1,5 @@
 {
-  "revision": "39",
+  "revision": "44",
   "properties": {
     "レコード番号": {
       "type": "RECORD_NUMBER",
@@ -38,7 +38,7 @@
       "type": "STATUS",
       "code": "ステータス",
       "label": "ステータス",
-      "enabled": false
+      "enabled": true
     },
     "ユーザー選択": {
       "type": "USER_SELECT",
@@ -128,7 +128,7 @@
       "type": "STATUS_ASSIGNEE",
       "code": "作業者",
       "label": "作業者",
-      "enabled": false
+      "enabled": true
     },
     "Table": {
       "type": "SUBTABLE",

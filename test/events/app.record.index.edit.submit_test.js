@@ -12,7 +12,7 @@ describe('app.record.index.edit.submit', () => {
     assert.equal(event.type, method);
   });
 
-  it('設定したvalueが反映されること', async () => {
+  it('recordのフィールドを変更した時、反映されること', async () => {
     kintone.events.on(method, (event) => {
       event.record.数値.value = '999';
       return event;
@@ -27,8 +27,10 @@ describe('app.record.index.edit.submit', () => {
     assert.equal(event.record.数値.value, '999');
   });
 
+  xit('書き換えできないフィールドを変更した時、反映されないこと', () => {});
+
   describe('returnしない場合', () => {
-    it('設定したvalueが反映されないこと', async () => {
+    it('recordのフィールドを変更した時、反映されないこと', async () => {
       let before;
       kintone.events.on(method, (event) => {
         before = event.record.数値.value;
@@ -55,7 +57,7 @@ describe('app.record.index.edit.submit', () => {
       assert.equal(event.type, success);
     });
 
-    it('設定したvalueが反映されないこと', async () => {
+    it('recordのフィールドを変更した時、反映されないこと', async () => {
       let before;
       kintone.events.on(success, (event) => {
         before = event.record.数値.value;

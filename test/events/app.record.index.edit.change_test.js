@@ -66,8 +66,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     assert.isNull(event);
   });
 
+  xit('recordのフィールドを変更した場合反映されること', async () => {});
+
   describe('returnしない場合', () => {
-    it('設定したvalueが反映されないこと', async () => {
+    it('recordのフィールドを変更しても反映されないこと', async () => {
       let before;
       kintone.events.on(method, (event) => {
         before = event.record.数値.value;
