@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
 const { assert } = require('chai');
 

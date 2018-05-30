@@ -1,6 +1,14 @@
-/* eslint-disable no-undef */
+/* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
 const { assert } = require('chai');
+
+const getActual = async (id) => {
+  const method = 'app.record.index.edit.show';
+  kintone.events.on(method, event => event);
+  const event = await kintone.events.do(method, { recordId: id });
+  kintone.events.off(method);
+  return event.record;
+};
 
 describe('app.record.detail.process.proceed', () => {
   const method = 'app.record.detail.process.proceed';
@@ -78,14 +86,29 @@ describe('app.record.detail.process.proceed', () => {
       .catch(e => assert.equal(e.message, 'nextStatus option is required.'));
   });
 
-  it('recordのフィールドを書き換えた時、値が反映されること', async () => {});
+  it('recordのフィールドを書き換えた時、値が反映されること', async () => {
+    kintone.events.on(method, (event) => {
+      event.record.数値.value = '999';
+      return event;
+    });
+    await kintone.events.do(method, {
+      recordId: '1',
+      action: 'test',
+      status: 'init',
+      nextStatus: 'next',
+    });
+
+    const actual = await getActual('1');
+    assert.equal(actual.数値.value, '999');
+  });
+
   describe('return false', () => {
-    it('recordのフィールドを書き換えた時、値が反映されないこと', async () => {});
+    xit('recordのフィールドを書き換えた時、値が反映されないこと', async () => {});
   });
   describe('returnしない場合', () => {
-    it('recordのフィールドを書き換えた時、値が反映されずにステータスのみ更新されること', async () => {});
+    xit('recordのフィールドを書き換えた時、値が反映されずにステータスのみ更新されること', async () => {});
   });
   describe('不正な値をreturnした場合', () => {
-    it('アクションがキャンセルされること', async () => {});
+    xit('アクションがキャンセルされること', async () => {});
   });
 });
