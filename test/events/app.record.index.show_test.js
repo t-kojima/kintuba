@@ -2,6 +2,14 @@
 require('../../lib');
 const { assert } = require('chai');
 
+const getActual = async (id) => {
+  const method = 'app.record.index.edit.show';
+  kintone.events.on(method, event => event);
+  const event = await kintone.events.do(method, { recordId: id });
+  kintone.events.off(method);
+  return event.record;
+};
+
 describe('app.record.index.show', () => {
   const method = 'app.record.index.show';
   afterEach(() => kintone.events.off(method));
@@ -26,7 +34,16 @@ describe('app.record.index.show', () => {
     });
   });
 
-  xit('recordsのフィールドを変更した時、反映されないこと', async () => {});
+  it('recordsのフィールドを変更した時、反映されないこと', async () => {
+    kintone.events.on(method, (event) => {
+      event.records.filter(a => a.$id.value === '1')[0].数値.value = '999';
+      return event;
+    });
+    await kintone.events.do(method);
+
+    const actual = await getActual('1');
+    assert.equal(actual.数値.value, '99');
+  });
 
   describe('カレンダービュー', () => {
     before(() => kintone.loadFixture('.kinmock/calendar'));
