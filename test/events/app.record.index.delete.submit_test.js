@@ -2,46 +2,47 @@
 require('../../lib');
 const { assert } = require('chai');
 
+const getSize = async () => {
+  const method = 'app.record.index.show';
+  kintone.events.on(method, event => event);
+  const event = await kintone.events.do(method);
+  kintone.events.off(method);
+  return event.size;
+};
+
 describe('app.record.index.delete.submit', () => {
-  const delMethod = 'app.record.index.delete.submit';
-  const showMethod = 'app.record.index.show';
-  afterEach(() => {
-    kintone.events.off(delMethod);
-    kintone.events.off(showMethod);
-  });
+  const method = 'app.record.index.delete.submit';
+  afterEach(() => kintone.events.off(method));
+  after(() => kintone.loadDefault());
 
   describe('return event;', () => {
     it('レコードが削除されること', async () => {
-      kintone.events.on(delMethod, event => event);
-      await kintone.events.do(delMethod, { recordId: '1' });
+      kintone.events.on(method, event => event);
+      await kintone.events.do(method, { recordId: '1' });
 
-      kintone.events.on(showMethod, event => event);
-      const event = await kintone.events.do(showMethod);
-      assert.equal(event.size, 2);
+      const size = await getSize();
+      assert.equal(size, 2);
     });
 
     it('削除結果が次のテストに波及すること', async () => {
-      kintone.events.on(showMethod, event => event);
-      const event = await kintone.events.do(showMethod);
-      assert.equal(event.size, 2);
+      const size = await getSize();
+      assert.equal(size, 2);
     });
 
     it('削除結果がリセットされること', async () => {
       kintone.loadDefault();
-      kintone.events.on(showMethod, event => event);
-      const event = await kintone.events.do(showMethod);
-      assert.equal(event.size, 3);
+      const size = await getSize();
+      assert.equal(size, 3);
     });
   });
 
   describe('return false;', () => {
     it('レコードが削除されないこと', async () => {
-      kintone.events.on(delMethod, () => false);
-      await kintone.events.do(delMethod, { recordId: '1' });
+      kintone.events.on(method, () => false);
+      await kintone.events.do(method, { recordId: '1' });
 
-      kintone.events.on(showMethod, event => event);
-      const event = await kintone.events.do(showMethod);
-      assert.equal(event.size, 3);
+      const size = await getSize();
+      assert.equal(size, 3);
     });
   });
 
@@ -54,23 +55,21 @@ describe('app.record.index.delete.submit', () => {
 
     describe('return event;', () => {
       it('レコードが削除できないこと', async () => {
-        kintone.events.on(delMethod, event => event);
-        await kintone.events.do(delMethod, { recordId: '1' });
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
 
-        kintone.events.on(showMethod, event => event);
-        const event = await kintone.events.do(showMethod);
-        assert.equal(event.size, 0);
+        const size = await getSize();
+        assert.equal(size, 0);
       });
     });
 
     describe('return false;', () => {
       it('レコードが削除されないこと', async () => {
-        kintone.events.on(delMethod, () => false);
-        await kintone.events.do(delMethod, { recordId: '1' });
+        kintone.events.on(method, () => false);
+        await kintone.events.do(method, { recordId: '1' });
 
-        kintone.events.on(showMethod, event => event);
-        const event = await kintone.events.do(showMethod);
-        assert.equal(event.size, 0);
+        const size = await getSize();
+        assert.equal(size, 0);
       });
     });
   });
@@ -81,12 +80,11 @@ describe('app.record.index.delete.submit', () => {
 
     describe('return event;', () => {
       it('レコードが削除されること', async () => {
-        kintone.events.on(delMethod, event => event);
-        await kintone.events.do(delMethod, { recordId: '1' });
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
 
-        kintone.events.on(showMethod, event => event);
-        const event = await kintone.events.do(showMethod);
-        assert.equal(event.size, 0);
+        const size = await getSize();
+        assert.equal(size, 0);
       });
     });
   });

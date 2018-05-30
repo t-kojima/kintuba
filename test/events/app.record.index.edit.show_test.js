@@ -2,9 +2,20 @@
 require('../../lib');
 const { assert } = require('chai');
 
+const getActual = async (id) => {
+  const method = 'app.record.index.edit.show';
+  kintone.events.on(method, event => event);
+  const event = await kintone.events.do(method, { recordId: id });
+  kintone.events.off(method);
+  return event.record;
+};
+
 describe('app.record.index.edit.show', () => {
   const method = 'app.record.index.edit.show';
-  afterEach(() => kintone.events.off(method));
+  afterEach(() => {
+    kintone.events.off(method);
+    kintone.loadDefault();
+  });
 
   it('idが未指定の場合Errorになること', async () => {
     kintone.events.on(method, event => event);
@@ -29,18 +40,15 @@ describe('app.record.index.edit.show', () => {
   });
 
   it('recordのフィールドを書き換えたとき反映されないこと', async () => {
-    let before;
     kintone.events.on(method, (event) => {
-      before = event.record.数値.value;
       event.record.数値.value = '999';
       return event;
     });
     await kintone.events.do(method, { recordId: '1' });
     kintone.events.off(method);
 
-    kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method, { recordId: '1' });
-    assert.equal(event.record.数値.value, before);
+    const actual = await getActual('1');
+    assert.equal(actual.数値.value, '99');
   });
 
   describe('.kinmockディレクトリが無い場合', () => {
