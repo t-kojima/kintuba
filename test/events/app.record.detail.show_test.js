@@ -2,5 +2,5 @@
 require('../../lib');
 
 describe('app.record.detail.show', () => {
-  // app.record.index.edit.showと同一
+  xdescribe('フィールドの表示／非表示を切り替える', () => {});
 });

@@ -51,6 +51,8 @@ describe('app.record.index.edit.show', () => {
     assert.equal(actual.数値.value, '99');
   });
 
+  xdescribe('フィールドの編集可／不可を設定する', () => {});
+
   describe('.kinmockディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');
