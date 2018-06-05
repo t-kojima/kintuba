@@ -77,16 +77,5 @@ describe('app.record.index.edit.submit', () => {
       const event = await kintone.events.do(method, { recordId: '1' });
       assert.equal(event.type, method);
     });
-
-    describe('.success', () => {
-      const success = 'app.record.index.edit.submit.success';
-      beforeEach(() => kintone.events.off(success));
-
-      it('イベントが発火すること', async () => {
-        kintone.events.on(success, event => event);
-        const event = await kintone.events.do(success, { recordId: '1' });
-        assert.equal(event.type, success);
-      });
-    });
   });
 });
