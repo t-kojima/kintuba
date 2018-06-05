@@ -92,5 +92,12 @@ describe('app.record.index.edit.show', () => {
       assert.isUndefined(event.recordId);
       assert.isUndefined(event.record);
     });
+
+    it('存在するidを指定した場合、指定のデータが取得されること', async () => {
+      kintone.events.on(method, event => event);
+      const event = await kintone.events.do(method, { recordId: '1' });
+      assert.equal(event.recordId, '1');
+      assert.equal(event.record.$id.value, '1');
+    });
   });
 });
