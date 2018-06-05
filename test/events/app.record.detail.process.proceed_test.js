@@ -12,7 +12,10 @@ const getActual = async (id) => {
 
 describe('app.record.detail.process.proceed', () => {
   const method = 'app.record.detail.process.proceed';
-  afterEach(() => kintone.events.off(method));
+  afterEach(() => {
+    kintone.events.off(method);
+    kintone.loadDefault();
+  });
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
@@ -103,12 +106,52 @@ describe('app.record.detail.process.proceed', () => {
   });
 
   describe('return false', () => {
-    xit('recordのフィールドを書き換えた時、値が反映されないこと', async () => {});
+    it('recordのフィールドを書き換えた時、値が反映されないこと', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.数値.value = '999';
+        return false;
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '99');
+    });
   });
+
   describe('returnしない場合', () => {
-    xit('recordのフィールドを書き換えた時、値が反映されずにステータスのみ更新されること', async () => {});
+    it('recordのフィールドを書き換えた時、値が反映されずにステータスのみ更新されること', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.数値.value = '999';
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '99');
+      assert.equal(actual.ステータス.value, 'next');
+    });
   });
+
   describe('不正な値をreturnした場合', () => {
-    xit('アクションがキャンセルされること', async () => {});
+    xit('アクションがキャンセルされること', async () => {
+      // 不正な値ってなんだろう…？
+    });
+  });
+
+  describe('errorプロパティを設定してreturnした場合', () => {
+    xit('アラートが表示され、アクションがキャンセルされること', async () => {});
+  });
+
+  describe('kintone.Promiseオブジェクトをreturnした場合', () => {
+    xit('非同期処理の実行を待ってイベントの処理を開始すること', async () => {});
   });
 });

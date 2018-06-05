@@ -8,6 +8,10 @@
       "type": "__REVISION__",
       "value": "1"
     },
+    "ステータス": {
+      "type": "STATUS",
+      "value": "init"
+    },
     "レコード番号": {
       "type": "RECORD_NUMBER",
       "value": "1"
