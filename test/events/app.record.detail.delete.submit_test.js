@@ -46,6 +46,10 @@ describe('app.record.detail.delete.submit', () => {
     });
   });
 
+  describe('return kintone.Promise', () => {
+    xit('非同期処理を待ってイベントが走ること', async () => {});
+  });
+
   describe('.kinmockディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');

@@ -84,6 +84,18 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     assert.equal(actual['文字列__複数行_'].value, 'DUMMY2');
   });
 
+  xdescribe('フィールドの編集可／不可を設定する', () => {
+
+  });
+
+  xdescribe('フィールドにエラーを表示する', () => {
+
+  });
+
+  xdescribe('画面の上部にエラーを表示する', () => {
+
+  });
+
   describe('returnしない場合', () => {
     it('recordのフィールドを変更しても反映されないこと', async () => {
       kintone.events.on(method, (event) => {
@@ -94,6 +106,8 @@ describe('app.record.index.edit.change.<フィールド>', () => {
       const actual = await getActual('1');
       assert.equal(actual['文字列__複数行_'].value, 'DUMMY1\nDUMMY2\n');
     });
+
+    xit('トリガーとなった値の変更はキャンセルされないこと', async () => {});
   });
 
   describe('ラジオボタンの場合', () => {
