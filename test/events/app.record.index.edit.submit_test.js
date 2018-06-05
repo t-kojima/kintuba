@@ -45,6 +45,14 @@ describe('app.record.index.edit.submit', () => {
     assert.equal(actual.文字列__1行__AUTO_CALC.value, '');
   });
 
+  xdescribe('フィールドにエラーを表示する', () => {});
+
+  xdescribe('画面の上部にエラーを表示する', () => {});
+
+  describe('return kintone.Promise', () => {
+    xit('非同期処理を待ってイベントが走ること', async () => {});
+  });
+
   describe('returnしない場合', () => {
     it('recordのフィールドを変更した時、反映されないこと', async () => {
       kintone.events.on(method, (event) => {

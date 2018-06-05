@@ -62,7 +62,7 @@ describe('app.record.create.show', () => {
   });
 
   describe('フィールドの編集不可を設定する', () => {
-    it('なにも反映されないこと', async () => {
+    it('プロパティ上は編集不可となる', async () => {
       kintone.events.on(method, (event) => {
         event.record.数値.disabled = true;
         return event;
@@ -72,7 +72,41 @@ describe('app.record.create.show', () => {
       });
 
       const actual = await getActual('1');
-      assert.isUndefined(actual.数値.disabled);
+      assert.isTrue(actual.数値.disabled);
     });
   });
+
+  describe('フィールドにエラーを表示する', () => {
+    it('プロパティ上はエラーメッセージが設定される', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.数値.error = 'ERROR MESSAGE';
+        return event;
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+      });
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.error, 'ERROR MESSAGE');
+    });
+  });
+
+  describe('画面の上部にエラーを表示する', () => {
+    it('エラーメッセージは保持されない', async () => {
+      kintone.events.on(method, (event) => {
+        event.error = 'ERROR MESSAGE';
+        return event;
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+      });
+
+      const actual = await getActual('1');
+      assert.isUndefined(actual.error);
+    });
+  });
+
+  xdescribe('ルックアップの取得を自動で行う', () => {});
+
+  xdescribe('フィールドの表示／非表示を切り替える', () => {});
 });
