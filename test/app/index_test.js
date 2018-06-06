@@ -51,6 +51,35 @@ describe('getLookupTargetAppId', () => {
   });
 });
 
+describe('getRelatedRecordsTargetAppId', () => {
+  describe('関連レコード一覧の場合', () => {
+    it('関連レコード一覧ののappIdが返ること', async () => {
+      const actual = kintone.app.getRelatedRecordsTargetAppId('関連レコード一覧');
+      assert.equal(actual, '2');
+    });
+  });
+
+  describe('関連レコード一覧ではない場合', () => {
+    it('nullが返ること', async () => {
+      const actual = kintone.app.getRelatedRecordsTargetAppId('数値');
+      assert.isNull(actual);
+    });
+  });
+
+  describe('.kintubaディレクトリが無い場合', () => {
+    before(() => {
+      kintone.loadSchema('.');
+      kintone.loadFixture('.');
+    });
+    after(() => kintone.loadDefault());
+
+    it('nullが返ること', async () => {
+      const actual = kintone.app.getRelatedRecordsTargetAppId('関連レコード一覧');
+      assert.isNull(actual);
+    });
+  });
+});
+
 describe('getQueryCondition', () => {
   describe('レコード一覧画面', () => {
     const method = 'app.record.index.show';
