@@ -2,55 +2,89 @@
 require('../lib');
 const { assert } = require('chai');
 
-describe('app.record', () => {
-  describe('app.record.index.show', () => {
-    const method = 'app.record.index.show';
-    afterEach(() => kintone.events.off(method));
+describe('kintone.app.record', () => {
+  describe('kintone.app.record.getId()', () => {
+    describe('レコード詳細・編集・印刷画面', () => {
+      const method = 'app.record.detail.show';
+      afterEach(() => kintone.events.off(method));
 
-    it('kintone.app.record.get()がnullであること', async () => {
-      kintone.events.on(method, event => event);
-      await kintone.events.do(method);
-      assert.isNull(kintone.app.record.get());
+      it('レコードIDが取得できること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '3' });
+        assert.equal(kintone.app.record.getId(), '3');
+      });
+    });
+
+    describe('レコード一覧画面', () => {
+      const method = 'app.record.index.show';
+      afterEach(() => kintone.events.off(method));
+
+      it('nullが返ること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method);
+        assert.isNull(kintone.app.record.getId());
+      });
     });
   });
 
-  describe('app.record.index.edit.show', () => {
-    const method = 'app.record.index.edit.show';
-    afterEach(() => kintone.events.off(method));
+  describe('kintone.app.record.get()', () => {
+    describe('レコード詳細・追加・編集・印刷画面', () => {
+      const method = 'app.record.detail.show';
+      afterEach(() => kintone.events.off(method));
 
-    it('kintone.app.record.get()がnullであること', async () => {
-      kintone.events.on(method, event => event);
-      await kintone.events.do(method, { recordId: '1' });
-      assert.isNull(kintone.app.record.get());
+      it('get()が取得できること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
+        const record = kintone.app.record.get();
+        assert.equal(record.record['数値'].value, '99');
+      });
+    });
+
+    describe('レコード一覧画面', () => {
+      const method = 'app.record.index.show';
+      afterEach(() => kintone.events.off(method));
+
+      it('nullが返ること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method);
+        assert.isNull(kintone.app.record.get());
+      });
     });
   });
 
-  describe('app.record.detail.show', () => {
-    const method = 'app.record.detail.show';
-    afterEach(() => kintone.events.off(method));
+  describe('kintone.app.record.set()', () => {
+    describe('レコード追加・編集画面', () => {
+      const method = 'app.record.create.show';
+      afterEach(() => kintone.events.off(method));
 
-    it('kintone.app.record.get()が取得できること', async () => {
-      kintone.events.on(method, event => event);
-      await kintone.events.do(method, { recordId: '1' });
-      const record = kintone.app.record.get();
-      assert.equal(record.record['数値'].value, '99');
+      it('set()で値が反映されること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
+
+        const record = kintone.app.record.get();
+        record.record['数値'].value = '777';
+        kintone.app.record.set(record);
+
+        const actual = kintone.app.record.get();
+        assert.equal(actual.record['数値'].value, '777');
+      });
     });
 
-    it('kintone.app.record.getId()が取得できること', async () => {
-      kintone.events.on(method, event => event);
-      await kintone.events.do(method, { recordId: '3' });
-      assert.equal(kintone.app.record.getId(), '3');
-    });
+    describe('レコード詳細画面', () => {
+      const method = 'app.record.detail.show';
+      afterEach(() => kintone.events.off(method));
 
-    it('kintone.app.record.set()で値が反映されること', async () => {
-      kintone.events.on(method, event => event);
-      await kintone.events.do(method, { recordId: '1' });
+      it('set()で値が反映されないこと', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
 
-      const record = kintone.app.record.get();
-      record.record['数値'].value = '77';
-      kintone.app.record.set(record);
+        const record = kintone.app.record.get();
+        record.record['数値'].value = '777';
+        kintone.app.record.set(record);
 
-      assert.equal(record.record['数値'].value, '77');
+        const actual = kintone.app.record.get();
+        assert.equal(actual.record['数値'].value, '99');
+      });
     });
   });
 
