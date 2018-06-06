@@ -50,7 +50,7 @@ describe('app.record.index.delete.submit', () => {
     xit('非同期処理を待ってイベントが走ること', async () => {});
   });
 
-  describe('.kinmockディレクトリが無い場合', () => {
+  describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');
       kintone.loadFixture('.');
@@ -79,7 +79,7 @@ describe('app.record.index.delete.submit', () => {
   });
 
   describe('fixture2 を読み込んだ場合', () => {
-    before(() => kintone.loadFixture('.kinmock/fixture2'));
+    before(() => kintone.loadFixture('.kintuba/fixture2'));
     after(() => kintone.loadDefault());
 
     describe('return event;', () => {

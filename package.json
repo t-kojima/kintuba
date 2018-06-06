@@ -1,18 +1,18 @@
 {
-  "name": "kinmock",
+  "name": "kintuba",
   "version": "0.0.1",
-  "description": "kinmock is mock for a unittest, it can use the kintone global object.",
+  "description": "kintuba is stub for a unittest, it can use the kintone global object.",
   "main": "index.js",
-  "repository": "git@github.com:t-kojima/kinmock.git",
+  "repository": "git@github.com:t-kojima/kintuba.git",
   "author": "t-kojima <t-kojima@skullware.net>",
   "license": "MIT",
   "private": true,
   "keywords": [
     "kintone"
   ],
-  "homepage": "https://github.com/t-kojima/kinmock",
+  "homepage": "https://github.com/t-kojima/kintuba",
   "bugs": {
-    "url": "https://github.com/t-kojima/kinmock/issues"
+    "url": "https://github.com/t-kojima/kintuba/issues"
   },
   "engines": {
     "node": ">=8.9"
@@ -40,7 +40,7 @@
     "node-fetch": "^2.1.2"
   },
   "bin": {
-    "kinmock": "./bin/kinmock"
+    "kintuba": "./bin/kintuba"
   },
   "scripts": {
     "test": "mocha --recursive test"

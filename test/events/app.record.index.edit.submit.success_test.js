@@ -43,7 +43,7 @@ describe('app.record.index.edit.submit.success', () => {
     xit('非同期処理を待ってイベントが走ること', async () => {});
   });
 
-  describe('.kinmockディレクトリが無い場合', () => {
+  describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');
       kintone.loadFixture('.');

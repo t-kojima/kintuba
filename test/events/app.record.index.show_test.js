@@ -46,7 +46,7 @@ describe('app.record.index.show', () => {
   });
 
   describe('カレンダービュー', () => {
-    before(() => kintone.loadFixture('.kinmock/calendar'));
+    before(() => kintone.loadFixture('.kintuba/calendar'));
     after(() => kintone.loadDefault());
 
     /*
@@ -92,7 +92,7 @@ describe('app.record.index.show', () => {
     });
   });
 
-  describe('.kinmockディレクトリが無い場合', () => {
+  describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');
       kintone.loadFixture('.');
@@ -121,7 +121,7 @@ describe('app.record.index.show', () => {
   });
 
   describe('handred を読み込んだ場合', () => {
-    before(() => kintone.loadFixture('.kinmock/handred'));
+    before(() => kintone.loadFixture('.kintuba/handred'));
     after(() => kintone.loadDefault());
 
     it('取得件数が100であること', async () => {

@@ -1,92 +1,213 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){
-const { EventEmitter } = require('events');
-const settings = require('./settings');
 
-const DEFAULT_VIEW_ID = '20';
 
-class EventObject {
+/* eslint-disable no-undef, class-methods-use-this */
+
+const Record = require('./../app/record');
+const schema = require('./../schema');
+
+module.exports = class App {
+  constructor() {
+    this.record = new Record();
+  }
+
+  getId() {
+    return schema.app.appId;
+  }
+
+  getHeaderMenuSpaceElement() {
+    return document.body;
+  }
+
+  getFieldElements() {
+    return {};
+  }
+
+  getHeaderSpaceElement() {
+    return {};
+  }
+
+  getLookupTargetAppId() {
+    return {};
+  }
+
+  getQuery() {
+    // index.jsでQueryConditionを呼び出して、動的にこのメソッドを定義する。
+  }
+
+  getQueryCondition() {
+    // index.jsでQueryConditionを呼び出して、動的にこのメソッドを定義する。
+    // typeやviewIdなど、Appクラスのプロパティとして公開したくない為
+  }
+
+  static QueryCondition(type, viewId) {
+    const allows = ['app.record.index', 'app.report'];
+    const isAllow = () => allows.some(a => type.startsWith(a));
+    if (!isAllow()) {
+      return () => null;
+    }
+    const { views } = schema.views;
+    const view = views
+      ? Object.keys(views)
+        .map(key => views[key])
+        .find(item => item.id === viewId)
+      : null;
+    return () => (view ? view.filterCond : '');
+  }
+
+  getRelatedRecordsTargetAppId() {
+    return {};
+  }
+};
+
+},{"./../app/record":2,"./../schema":16}],2:[function(require,module,exports){
+
+
+module.exports = class Record {
+  constructor(type, data) {
+    this.type = type;
+    this.data = data;
+  }
+
+  getId() {
+    const allows = ['app.record.detail', 'app.record.edit', 'app.record.print'];
+    const isAllow = () => allows.some(a => this.type.startsWith(a));
+    return this.data && isAllow() ? this.data.$id.value : null;
+  }
+
+  get() {
+    const allows = [
+      'app.record.detail',
+      'app.record.create',
+      'app.record.edit',
+      'app.record.print',
+    ];
+    const isAllow = () => allows.some(a => this.type.startsWith(a));
+    return this.data && isAllow() ? JSON.parse(JSON.stringify({ record: this.data })) : null;
+  }
+
+  set(data) {
+    const allows = ['app.record.create', 'app.record.edit'];
+    const isAllow = () => allows.some(a => this.type.startsWith(a));
+    if (isAllow()) {
+      this.data = JSON.parse(JSON.stringify(data.record));
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  setFieldShown(fieldCode, isShown) {
+    // 何もしない
+  }
+
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  setGroupFieldOpen(fieldCode, isOpen) {
+    // 何もしない
+  }
+};
+
+},{}],3:[function(require,module,exports){
+
+
+const schema = require('./../schema');
+
+module.exports = class EventObject {
   constructor(event) {
-    this.appId = settings.app.appId;
+    this.appId = schema.app.appId;
     this.type = event;
   }
-}
+};
 
-class RecordEventObject extends EventObject {
-  constructor(event, options = { recordId: '1' }) {
-    super(event);
+},{"./../schema":16}],4:[function(require,module,exports){
 
-    const record = settings.records.find(a => a.$id.value === options.recordId);
-    this.recordId = record ? record.$id.value : '0';
-    this.record = record || {};
-  }
-}
 
-class RecordChangeEventObject extends RecordEventObject {
-  constructor(event, options = { recordId: '1' }, type) {
-    super(event, options);
+const { EventEmitter } = require('events');
 
-    this.changes = {
-      field: {
-        type,
-        value: 'value' in options ? options.value : '',
-      },
-      row: {},
-    };
-  }
-}
+const RecordEventObject = require('./record_event_object');
+const RecordEditEventObject = require('./record_edit_event_object');
+const RecordEditSubmitEventObject = require('./record_edit_submit_event_object');
+const RecordEditSubmitSuccessEventObject = require('./record_edit_submit_success_event_object');
+const RecordDeleteEventObject = require('./record_delete_event_object');
+const RecordChangeEventObject = require('./record_change_event_object');
+const RecordProcessEventObject = require('./record_process_event_object');
+const RecordsEventObject = require('./records_event_object');
+const ReportEventObject = require('./report_event_object');
 
-class RecordsEventObject extends EventObject {
-  constructor(event, options = {}) {
-    super(event);
-
-    this.date = null;
-    this.offset = 0;
-
-    const { views } = settings.views;
-    const view = Object.keys(views)
-      .map(key => views[key])
-      .find(item => item.id === options.viewId);
-    this.viewId = view ? view.id : DEFAULT_VIEW_ID;
-    this.viewName = view ? view.name : '（すべて）';
-    this.viewType = view ? view.type.toLowerCase() : 'list';
-
-    this.size = settings.records.length;
-    this.records = settings.records;
-  }
-}
-
-// eslint-disable-next-line no-unused-vars
+// kintone.eventsからアクセスできないようにEventクラス外へ配置
 const app = {
   record: {
     index: {
       show: (event, options) => new RecordsEventObject(event, options),
       edit: {
         show: (event, options) => new RecordEventObject(event, options),
-        submit: (event, options) => new RecordEventObject(event, options),
+        submit: (event, options) => new RecordEditSubmitEventObject(event, options),
         change: {},
       },
       delete: {
-        submit: (event, options) => new RecordEventObject(event, options),
+        submit: (event, options) => new RecordDeleteEventObject(event, options),
       },
+    },
+    detail: {
+      show: (event, options) => new RecordEventObject(event, options),
+      delete: {
+        submit: (event, options) => new RecordDeleteEventObject(event, options),
+      },
+      process: {
+        proceed: (event, options) => new RecordProcessEventObject(event, options),
+      },
+    },
+    create: {
+      show: (event, options) => new RecordEditEventObject(event, options),
+      submit: (event, options) => new RecordEditSubmitEventObject(event, options),
+      change: {},
+    },
+    edit: {
+      show: (event, options) => new RecordEditEventObject(event, options),
+      submit: (event, options) => new RecordEditSubmitEventObject(event, options),
+      change: {},
+    },
+    print: {
+      show: (event, options) => new RecordEventObject(event, options),
     },
   },
   report: {
-    show: () => {},
+    show: (event, options) => new ReportEventObject(event, options),
   },
 };
 
 // 関数に関数を定義する
-app.record.index.edit.submit.success = (event, options) => new RecordEventObject(event, options);
+app.record.index.edit.submit.success = (event, options) =>
+  new RecordEditSubmitSuccessEventObject(event, options);
+app.record.create.submit.success = (event, options) =>
+  new RecordEditSubmitSuccessEventObject(event, options);
+app.record.edit.submit.success = (event, options) =>
+  new RecordEditSubmitSuccessEventObject(event, options);
 
 // fields項目の関数を定義する
-Object.keys(settings.fields.properties).forEach((key) => {
-  const prop = settings.fields.properties[key];
-  app.record.index.edit.change[key] = (event, options) =>
-    new RecordChangeEventObject(event, options, prop.type);
-});
+const setFieldsProperties = (fields) => {
+  if (fields.properties) {
+    Object.keys(fields.properties)
+      .filter(key =>
+        RecordChangeEventObject.TYPES.some(type => type === fields.properties[key].type))
+      .forEach((key) => {
+        const prop = fields.properties[key];
+        app.record.index.edit.change[key] = (event, options) =>
+          new RecordChangeEventObject(event, options, prop.type, true);
+        app.record.create.change[key] = (event, options) =>
+          new RecordChangeEventObject(event, options, prop.type, true);
+        app.record.edit.change[key] = (event, options) =>
+          new RecordChangeEventObject(event, options, prop.type, false);
+      });
+  } else {
+    app.record.index.edit.change = {};
+  }
+};
 
 module.exports = class Event extends EventEmitter {
+  constructor(fields) {
+    super();
+    setFieldsProperties(fields);
+  }
+
   emit(event, ...args) {
     const promises = [];
     this.listeners(event).forEach((listener) => {
@@ -96,18 +217,19 @@ module.exports = class Event extends EventEmitter {
   }
 
   async do(event, options) {
-    global.kintone.location = event;
     if (
       event.match(/^app\.(record|report)(\.(index|detail))?(\.(create|edit|delete|print))?(\.(show|change|submit|process))?(\.(success|proceed))?(\..+)?$/)
     ) {
+      // appへイベント実行を通知
+      await this.emit('event.do', event, options);
       // eslint-disable-next-line no-eval
       const func = eval(`${event}`);
       if (typeof func === 'function') {
         // 複数ハンドラ登録されていた場合、最後のみ反映させる為popする
         const resolve = (await this.emit(event, func(event, options))).pop();
-        if (event === 'app.record.index.delete.submit' && resolve && resolve.recordId !== '0') {
-          settings.records = settings.records.filter(r => r.$id.value !== resolve.record.$id.value);
-        }
+        // app.record等へ変更を通知
+        await this.emit('event.type.changed', resolve);
+        if (resolve && resolve.done) resolve.done();
         return resolve;
       }
       // eslint-disable-next-line no-console
@@ -120,61 +242,477 @@ module.exports = class Event extends EventEmitter {
   }
 
   off(event) {
-    this.removeAllListeners(event);
+    if (event) {
+      this.removeAllListeners(event);
+    } else {
+      this.removeAllListeners();
+    }
   }
 };
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./settings":3,"events":5}],2:[function(require,module,exports){
-(function (global){
-/* eslint-disable no-undef */
-const settings = require('./settings');
-const Event = require('./event');
+},{"./record_change_event_object":5,"./record_delete_event_object":6,"./record_edit_event_object":7,"./record_edit_submit_event_object":8,"./record_edit_submit_success_event_object":9,"./record_event_object":10,"./record_process_event_object":11,"./records_event_object":12,"./report_event_object":13,"events":18}],5:[function(require,module,exports){
 
-const app = {
-  getId: () => 1,
-  getHeaderMenuSpaceElement: () => document.body,
-  getFieldElements: () => {},
-  getHeaderSpaceElement: () => {},
-  getLookupTargetAppId: () => {},
-  getQuery: () => {},
-  getQueryCondition: () => {},
-  getRelatedRecordsTargetAppId: () => {},
-  record: () => {},
+
+// record.index.edit.change.<field>
+// record.edit.change.<field>
+// record.create.change.<field>
+
+const fixture = require('./../fixture');
+const RecordEventObject = require('./record_event_object');
+
+const getKey = (type) => {
+  const keys = type.split('.');
+  return keys[keys.length - 1];
 };
+
+module.exports = class RecordChangeEventObject extends RecordEventObject {
+  constructor(event, options = {}, type, triggerNotCancel) {
+    super(event, options);
+
+    if (options.value === undefined) throw new Error('value option is required.');
+
+    this.changes = {
+      field: {
+        type,
+        value: options.value,
+      },
+      row: {},
+    };
+
+    if (triggerNotCancel) {
+      this.record[getKey(this.type)].value = options.value;
+      this.rollbackDisallowFields();
+      fixture.update(this.record);
+    }
+  }
+
+  done() {
+    this.record[getKey(this.type)].value = this.changes.field.value;
+    this.rollbackDisallowFields();
+    fixture.update(this.record);
+  }
+
+  static get TYPES() {
+    return [
+      'RADIO_BUTTON',
+      'DROP_DOWN',
+      'CHECK_BOX',
+      'MULTI_SELECT',
+      'USER_SELECT',
+      'ORGANIZATION_SELECT',
+      'GROUP_SELECT',
+      'DATE',
+      'TIME',
+      'DATETIME',
+      'SINGLE_LINE_TEXT',
+      'NUMBER',
+      'SUBTABLE',
+    ];
+  }
+};
+
+},{"./../fixture":14,"./record_event_object":10}],6:[function(require,module,exports){
+
+
+// app.record.detail.delete.submit
+// app.record.index.delete.submit
+
+const fixture = require('./../fixture');
+const RecordEventObject = require('./record_event_object');
+
+module.exports = class RecordDeleteEventObject extends RecordEventObject {
+  constructor(event, options = {}) {
+    super(event, options);
+  }
+
+  done() {
+    fixture.delete(this.recordId);
+  }
+};
+
+},{"./../fixture":14,"./record_event_object":10}],7:[function(require,module,exports){
+
+
+// app.record.create.show
+// app.record.edit.show
+
+const fixture = require('./../fixture');
+const RecordEventObject = require('./record_event_object');
+
+module.exports = class RecordEditEventObject extends RecordEventObject {
+  constructor(event, options = {}) {
+    super(event, options);
+    this.reuse = false;
+  }
+
+  done() {
+    this.rollbackDisallowFields();
+    fixture.update(this.record);
+  }
+};
+
+},{"./../fixture":14,"./record_event_object":10}],8:[function(require,module,exports){
+
+
+// record.index.edit.submit
+// record.create.submit
+// record.edit.submit
+
+const fixture = require('./../fixture');
+const RecordEventObject = require('./record_event_object');
+
+module.exports = class RecordEditSubmitEventObject extends RecordEventObject {
+  constructor(event, options = {}) {
+    super(event, options);
+  }
+
+  done() {
+    this.rollbackDisallowFields();
+    fixture.update(this.record);
+  }
+};
+
+},{"./../fixture":14,"./record_event_object":10}],9:[function(require,module,exports){
+
+
+// record.index.edit.submit.success
+// record.create.submit.success
+// record.edit.submit.success
+
+const RecordEventObject = require('./record_event_object');
+
+module.exports = class RecordEditSubmitSuccessEventObject extends RecordEventObject {
+  constructor(event, options = {}) {
+    super(event, options);
+    this.url = null;
+  }
+
+  done() {
+    if (this.url) {
+      // eslint-disable-next-line no-undef, no-restricted-globals
+      location.href = this.url;
+    }
+  }
+};
+
+},{"./record_event_object":10}],10:[function(require,module,exports){
+
+
+// app.record.index.edit.show
+// app.record.detail.show
+// app.record.print.show
+
+const schema = require('./../schema');
+const fixture = require('./../fixture');
+const EventObject = require('./event_object');
+
+module.exports = class RecordEventObject extends EventObject {
+  constructor(event, options = {}) {
+    super(event);
+
+    if (!options.recordId) throw new Error('recordId option is required.');
+
+    const copy = fixture.find(options.recordId);
+    if (copy) {
+      const record = JSON.parse(JSON.stringify(copy));
+      this.recordId = record.$id.value;
+      this.record = record;
+    }
+  }
+
+  rollbackDisallowFields() {
+    const EDIT_DISALLOWS = [
+      'RECORD_NUMBER',
+      'CREATOR',
+      'CREATED_TIME',
+      'MODIFIER',
+      'UPDATED_TIME',
+      'STATUS',
+      'STATUS_ASSIGNEE',
+      'CALC',
+      'FILE',
+    ];
+
+    const isDisallows = key => EDIT_DISALLOWS.some(a => a === schema.fields.properties[key].type);
+
+    const isAutoCalc = key =>
+      schema.fields.properties[key].type === 'SINGLE_LINE_TEXT' &&
+      schema.fields.properties[key].expression;
+
+    const isLookup = key =>
+      (schema.fields.properties[key].type === 'SINGLE_LINE_TEXT' ||
+        schema.fields.properties[key].type === 'NUMBER') &&
+      schema.fields.properties[key].lookup;
+
+    const isLookupMapping = (key) => {
+      const mappings = Object.keys(schema.fields.properties)
+        .filter(k =>
+          schema.fields.properties[k].lookup && schema.fields.properties[k].lookup.fieldMappings)
+        .map(k => schema.fields.properties[k].lookup.fieldMappings);
+      return mappings.some(a => a.some(b => b.field === key));
+    };
+
+    const hasSchema = key => Object.keys(schema.fields.properties).some(a => a === key);
+
+    if (this.record) {
+      Object.keys(this.record)
+        .filter(key => hasSchema(key))
+        .forEach((key) => {
+          // 編集非許可のフィールド or 文字列かつ自動計算 or ルックアップ or ルックアップコピー先 は編集不可
+          if (isDisallows(key) || isAutoCalc(key) || isLookup(key) || isLookupMapping(key)) {
+            this.record[key].value = fixture.find(this.recordId)[key].value;
+          }
+          // ラジオボタンフィールドで空文字列を指定した場合、初期値の選択肢になる
+          if (
+            schema.fields.properties[key].type === 'RADIO_BUTTON' &&
+            this.record[key].value === ''
+          ) {
+            this.record[key].value = schema.fields.properties[key].defaultValue;
+          }
+        });
+    }
+  }
+};
+
+},{"./../fixture":14,"./../schema":16,"./event_object":3}],11:[function(require,module,exports){
+
+
+const fixture = require('./../fixture');
+const RecordEventObject = require('./record_event_object');
+
+module.exports = class RecordProcessEventObject extends RecordEventObject {
+  constructor(event, options = {}) {
+    super(event, options);
+
+    if (options.action === undefined) throw new Error('action option is required.');
+    if (options.status === undefined) throw new Error('status option is required.');
+    if (options.nextStatus === undefined) throw new Error('nextStatus option is required.');
+
+    this.action = { value: options.action };
+    this.status = { value: options.status };
+    this.nextStatus = { value: options.nextStatus };
+    this.error = null;
+
+    this.record.ステータス.value = this.nextStatus.value;
+    fixture.update(this.record);
+  }
+
+  done() {
+    if (this.error) {
+      // eslint-disable-next-line no-undef, no-alert
+      alert(this.error);
+    } else {
+      this.rollbackDisallowFields();
+      fixture.update(this.record);
+    }
+  }
+};
+
+},{"./../fixture":14,"./record_event_object":10}],12:[function(require,module,exports){
+
+
+const fixture = require('./../fixture');
+const schema = require('./../schema');
+const EventObject = require('./event_object');
+
+const DEFAULT_VIEW_ID = '20';
+
+/* eslint-disable no-param-reassign */
+
+const calendarRecords = (keyColumn, yyyymm) =>
+  JSON.parse(JSON.stringify(fixture.records))
+    .filter(r => r[keyColumn].value && r[keyColumn].value.startsWith(yyyymm))
+    // [...record] から { date: [...record],} へ変換
+    .reduce((prev, cur) => {
+      if (cur[keyColumn].value) {
+        const date = cur[keyColumn].value.slice(0, 10);
+        if (!prev[date]) prev[date] = [];
+        prev[date].push(cur);
+      }
+      return prev;
+    }, {});
+
+module.exports = class RecordsEventObject extends EventObject {
+  constructor(event, options = {}) {
+    super(event);
+
+    const { views } = schema.views;
+    const view = views
+      ? Object.keys(views)
+        .map(key => views[key])
+        .find(item => item.id === options.viewId)
+      : null;
+    this.viewId = view ? view.id : DEFAULT_VIEW_ID;
+    this.viewName = view ? view.name : '（すべて）';
+    this.viewType = view ? view.type.toLowerCase() : 'list';
+
+    const isCalendar = () => this.viewType === 'calendar';
+
+    this.date = (() => {
+      if (!isCalendar()) return null;
+      if (options.date) return options.date;
+      throw new Error('date option is required when selected calendar');
+    })();
+
+    this.offset = (() => {
+      if (isCalendar()) return null;
+      return options.offset ? options.offset : 0;
+    })();
+
+    this.records = (() => {
+      if (isCalendar()) {
+        return calendarRecords(view.date, this.date);
+      }
+      const limit = options.limit ? options.limit : 100;
+      // record.skip(offset).take(limit)...って書きたい
+      // TODO viewのfilterとsort条件の実装
+      return JSON.parse(JSON.stringify(fixture.records))
+        .slice(this.offset)
+        .slice(0, limit);
+    })();
+    this.size = isCalendar() ? null : this.records.length;
+  }
+};
+
+},{"./../fixture":14,"./../schema":16,"./event_object":3}],13:[function(require,module,exports){
+
+
+// app.report.show
+
+const EventObject = require('./event_object');
+
+module.exports = class ReportEventObject extends EventObject {
+  constructor(event, options = {}) {
+    super(event, options);
+  }
+};
+
+},{"./event_object":3}],14:[function(require,module,exports){
+
+
+const fs = require('fs');
+
+const DIR_FIXTURE = '.kintuba/fixture';
+const ENCODING = 'utf8';
+
+const loadFile = (filePath, defaults) => {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, ENCODING));
+  } catch (err) {
+    return defaults;
+  }
+};
+
+// ログイン情報
+exports.login = (() => {
+  // eslint-disable-next-line no-console
+  console.info(`Load setting : ${DIR_FIXTURE}/login.json`);
+  return loadFile(`${DIR_FIXTURE}/login.json`, {});
+})();
+
+// レコードデータ
+exports.records = (() => {
+  // eslint-disable-next-line no-console
+  console.info(`Load setting : ${DIR_FIXTURE}/records.json`);
+  return loadFile(`${DIR_FIXTURE}/records.json`, []);
+})();
+
+exports.loadFixture = (dirname = DIR_FIXTURE) => {
+  this.login = loadFile(`${dirname}/login.json`, {});
+  this.records = loadFile(`${dirname}/records.json`, []);
+};
+
+exports.find = (id) => {
+  const records = this.records.filter(r => r.$id.value === id);
+  return records ? records[0] : null;
+};
+
+exports.update = (record) => {
+  if (record) {
+    this.delete(record.$id.value);
+    this.records.push(JSON.parse(JSON.stringify(record)));
+  }
+};
+
+exports.delete = (id) => {
+  this.records = this.records.filter(r => r.$id.value !== id);
+};
+
+},{"fs":17}],15:[function(require,module,exports){
+(function (global){
+
+
+/* eslint-disable no-undef, class-methods-use-this */
+
+const App = require('./app');
+const Record = require('./app/record');
+const Event = require('./event');
+const schema = require('./schema');
+const fixture = require('./fixture');
 
 const api = {
   getConcurrencyLimit: () => {},
 };
 
-global.kintone = {
-  app,
-  api,
-  events: new Event(),
-  getLoginUser: () => settings.login,
-  getUiVersion: () => 2,
-  location: null,
-  reset: () => {
-    // eslint-disable-next-line no-console
-    console.info('reset kintone fixtures');
-    settings.reset();
-  },
+const onLocationChangedEvent = (events, app) => {
+  // 外部に公開したくないパラメータを利用するメンバを動的に定義する。
+  events.on('event.do', (type, options) => {
+    // eslint-disable-next-line no-param-reassign
+    app.getQuery = App.QueryCondition(type, options ? options.viewId : null);
+    // eslint-disable-next-line no-param-reassign
+    app.getQueryCondition = App.QueryCondition(type, options ? options.viewId : null);
+  });
+  events.on('event.type.changed', (event) => {
+    // eslint-disable-next-line no-param-reassign
+    app.record = event ? new Record(event.type, event.record) : new Record();
+  });
 };
 
+class kintuba {
+  constructor() {
+    this.app = new App();
+    this.api = api;
+    this.events = new Event(schema.fields);
+    onLocationChangedEvent(this.events, this.app);
+  }
+
+  loadSchema(dirname) {
+    schema.loadSchema(dirname);
+    this.events = new Event(schema.fields);
+    onLocationChangedEvent(this.events, this.app);
+  }
+
+  loadFixture(dirname) {
+    fixture.loadFixture(dirname);
+  }
+
+  loadDefault() {
+    this.loadSchema();
+    this.loadFixture();
+  }
+
+  getLoginUser() {
+    return fixture.login;
+  }
+
+  getUiVersion() {
+    return 2;
+  }
+}
+
+global.kintone = new kintuba();
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./event":1,"./settings":3}],3:[function(require,module,exports){
+},{"./app":1,"./app/record":2,"./event":4,"./fixture":14,"./schema":16}],16:[function(require,module,exports){
 
 
 const fs = require('fs');
 
-const DIR_SCHEMA = '.kinmock/schema';
-const DIR_FIXTURE = '.kinmock/fixture';
+const DIR_SCHEMA = '.kintuba/schema';
 const ENCODING = 'utf8';
 
 const loadFile = (filePath, defaults) => {
   try {
-    // eslint-disable-next-line no-console
-    console.info(`Load setting : ${filePath}`);
     return JSON.parse(fs.readFileSync(filePath, ENCODING));
   } catch (err) {
     return defaults;
@@ -182,59 +720,35 @@ const loadFile = (filePath, defaults) => {
 };
 
 // アプリ情報
-exports.app = (() =>
-  loadFile(`${DIR_SCHEMA}/app.json`, {
-    appId: '0',
-    code: '',
-    name: '',
-    description: '',
-    createdAt: '',
-    creator: {
-      code: '',
-      name: '',
-    },
-    modifiedAt: '',
-    modifier: {
-      code: '',
-      name: '',
-    },
-    spaceId: null,
-    threadId: null,
-  }))();
+exports.app = (() => {
+  // eslint-disable-next-line no-console
+  console.info(`Load setting : ${DIR_SCHEMA}/app.json`);
+  return loadFile(`${DIR_SCHEMA}/app.json`, {});
+})();
 
 // ビューデータ
-exports.views = (() => loadFile(`${DIR_SCHEMA}/views.json`, {}))();
+exports.views = (() => {
+  // eslint-disable-next-line no-console
+  console.info(`Load setting : ${DIR_SCHEMA}/views.json`);
+  return loadFile(`${DIR_SCHEMA}/views.json`, {});
+})();
 
 // フィールドデータ
-exports.fields = (() => loadFile(`${DIR_SCHEMA}/fields.json`, {}))();
+exports.fields = (() => {
+  // eslint-disable-next-line no-console
+  console.info(`Load setting : ${DIR_SCHEMA}/fields.json`);
+  return loadFile(`${DIR_SCHEMA}/fields.json`, {});
+})();
 
-// ログイン情報
-exports.login = (() =>
-  loadFile(`${DIR_FIXTURE}/login.json`, {
-    id: '',
-    code: '',
-    name: '',
-    email: '',
-    url: '',
-    employeeNumber: '',
-    phone: '',
-    mobilePhone: '',
-    extensionNumber: '',
-    timezone: '',
-    isGuest: false,
-    language: '',
-  }))();
-
-// レコードデータ
-exports.records = (() => loadFile(`${DIR_FIXTURE}/records.json`, []))();
-
-exports.reset = () => {
-  this.records = (() => loadFile(`${DIR_FIXTURE}/records.json`, []))();
+exports.loadSchema = (dirname = DIR_SCHEMA) => {
+  this.app = loadFile(`${dirname}/app.json`, {});
+  this.views = loadFile(`${dirname}/views.json`, {});
+  this.fields = loadFile(`${dirname}/fields.json`, {});
 };
 
-},{"fs":4}],4:[function(require,module,exports){
+},{"fs":17}],17:[function(require,module,exports){
 
-},{}],5:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -755,4 +1269,4 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}]},{},[2]);
+},{}]},{},[15]);

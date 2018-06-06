@@ -33,9 +33,9 @@ exports.fetch = async () => {
 
   const save = async (target, json) => {
     const filename = target.replace(/\//g, '_');
-    await promisify(fs.mkdir)('.kinmock').catch(() => {});
-    await promisify(fs.mkdir)('.kinmock/schema').catch(() => {});
-    await promisify(fs.writeFile)(`.kinmock/schema/${filename}`, json, { encoding: ENCODING });
+    await promisify(fs.mkdir)('.kintuba').catch(() => {});
+    await promisify(fs.mkdir)('.kintuba/schema').catch(() => {});
+    await promisify(fs.writeFile)(`.kintuba/schema/${filename}`, json, { encoding: ENCODING });
   };
 
   const fetchWithSave = async (args) => {

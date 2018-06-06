@@ -1,36 +1,36 @@
-# kinmock
+# kintuba
 
-[![Build Status](https://secure.travis-ci.org/t-kojima/kinmock.png?branch=master)](http://travis-ci.org/t-kojima/kinmock)
+[![Build Status](https://secure.travis-ci.org/t-kojima/kintuba.png?branch=master)](http://travis-ci.org/t-kojima/kintuba)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Kinmock is mock for a unittest, it can use the kintone global object.
+kintuba is stub for a unittest, it can use the kintone global object.
 
-Kinmock は単体テストで利用できる**kintone**オブジェクトのモックです。
+kintuba は単体テストで利用できる**kintone**オブジェクトのモックです。
 
 # Description
 
-kinmock は`node.js`上で動作する**kintone**オブジェクトのモックです。kintone カスタマイズの JavaScript をローカル開発環境でテストする際に使用できます。
+kintuba は`node.js`上で動作する**kintone**オブジェクトのモックです。kintone カスタマイズの JavaScript をローカル開発環境でテストする際に使用できます。
 
 `document`へアクセスするコードをテストする場合は、karma プラグインを併せて利用して下さい。
 
-https://github.com/t-kojima/karma-kinmock
+https://github.com/t-kojima/karma-kintuba
 
 # Warning
 
-kinmock は`require`されるとグローバルの`kintone`オブジェクトを**上書き**します。（これは kintone にアップロードする JavaScript ファイルをそのままテストできるようにする為です。）
+kintuba は`require`されるとグローバルの`kintone`オブジェクトを**上書き**します。（これは kintone にアップロードする JavaScript ファイルをそのままテストできるようにする為です。）
 
 ローカルでのテストでのみの使用とし、本番環境では使用しないで下さい。
 
 # Install
 
 ```
-$ npm install --save-dev kinmock
+$ npm install --save-dev kintuba
 ```
 
 or
 
 ```
-$ yarn add --dev kinmock
+$ yarn add --dev kintuba
 ```
 
 # Usage
@@ -38,12 +38,12 @@ $ yarn add --dev kinmock
 テストコードで`require`して下さい。以後テストコード及びテスト対象コードで`kintone`オブジェクトが利用できます。
 
 ```javascript
-require('kinmock');
+require('kintuba');
 ```
 
 ## イベントの実行
 
-kintone では画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので、kinmock ではイベントを実行する関数を用意しています。
+kintone では画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので、kintuba ではイベントを実行する関数を用意しています。
 
 `kintone.events.on`でイベントを登録するのに対し、`kintone.events.do`でイベントを実行します。
 
@@ -70,23 +70,23 @@ kintone.events.do('app.record.detail.show', { recordId: '2' });
 
 ## テストデータの利用
 
-kinmock を`require`しただけではデータが存在しない為、`event.records`などにアクセスしても空配列が返ってしまいます。テスト用のデータを取得できるようにする為には、以下の手順で予めテストデータを準備する必要があります。尚、以下の手順では`kintone REST API`を利用して対象アプリの情報を取得します。
+kintuba を`require`しただけではデータが存在しない為、`event.records`などにアクセスしても空配列が返ってしまいます。テスト用のデータを取得できるようにする為には、以下の手順で予めテストデータを準備する必要があります。尚、以下の手順では`kintone REST API`を利用して対象アプリの情報を取得します。
 
 ### kintone REST API 認証ファイルの作成
 
-`kinmock init`コマンドで認証用テンプレートを作成します。
+`kintuba init`コマンドで認証用テンプレートを作成します。
 
 ```
-$ npx kinmock init
+$ npx kintuba init
 ```
 
 or
 
 ```
-$ yarn kinmock init
+$ yarn kintuba init
 ```
 
-カレントディレクトリに`.kinmock.json`が作成されるので、各パラメータを設定します。
+カレントディレクトリに`.kintuba.json`が作成されるので、各パラメータを設定します。
 
 ```
 {
@@ -102,16 +102,16 @@ $ yarn kinmock init
 作成した認証用ファイルを使用し、kintone REST API からアプリ情報を取得します。
 
 ```
-$ npx kinmock fetch
+$ npx kintuba fetch
 ```
 
 or
 
 ```
-$ yarn kinmock fetch
+$ yarn kintuba fetch
 ```
 
-`.kinmock`ディレクトリが作成され、以下のファイルが生成されます。
+`.kintuba`ディレクトリが作成され、以下のファイルが生成されます。
 
 * schema
   * app.json
@@ -122,7 +122,7 @@ $ yarn kinmock fetch
   * login.json
   * records.json
 
-`schema`ディレクトリは kinmock が利用するアプリの設定情報のファイルが生成されます。
+`schema`ディレクトリは kintuba が利用するアプリの設定情報のファイルが生成されます。
 
 `fixture`ディレクトリはテストデータ入力用のテンプレートが生成されます。
 
@@ -155,7 +155,7 @@ $ yarn kinmock fetch
 ]
 ```
 
-以上、`fixture`ディレクトリのファイルにテストデータを登録することで、kinmockのテストデータが利用できます。
+以上、`fixture`ディレクトリのファイルにテストデータを登録することで、kintubaのテストデータが利用できます。
 
 ```javascript
 kintone.events.on('app.record.index.show', (event) => {

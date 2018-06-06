@@ -66,7 +66,7 @@ describe('app.record.index.edit.show', () => {
     });
   });
 
-  describe('.kinmockディレクトリが無い場合', () => {
+  describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');
       kintone.loadFixture('.');
@@ -90,7 +90,7 @@ describe('app.record.index.edit.show', () => {
   });
 
   describe('fixture2 を読み込んだ場合', () => {
-    before(() => kintone.loadFixture('.kinmock/fixture2'));
+    before(() => kintone.loadFixture('.kintuba/fixture2'));
     after(() => kintone.loadDefault());
 
     it('idが未指定の場合Errorになること', async () => {

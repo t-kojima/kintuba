@@ -6,7 +6,7 @@ const { promisify } = require('util');
 const ENCODING = 'utf8';
 
 const createLogin = async () => {
-  const FILE_PATH = '.kinmock/fixture/login.json';
+  const FILE_PATH = '.kintuba/fixture/login.json';
   const data = {
     id: '',
     code: '',
@@ -21,8 +21,8 @@ const createLogin = async () => {
     isGuest: false,
     language: '',
   };
-  await promisify(fs.mkdir)('.kinmock').catch(() => {});
-  await promisify(fs.mkdir)('.kinmock/fixture').catch(() => {});
+  await promisify(fs.mkdir)('.kintuba').catch(() => {});
+  await promisify(fs.mkdir)('.kintuba/fixture').catch(() => {});
   await promisify(fs.writeFile)(FILE_PATH, JSON.stringify(data, null, '  '), {
     encoding: ENCODING,
   });
@@ -32,7 +32,7 @@ const createLogin = async () => {
 
 const createRecords = async () => {
   const readFile = async () => {
-    const FILE_PATH = '.kinmock/schema/fields.json';
+    const FILE_PATH = '.kintuba/schema/fields.json';
     const json = await promisify(fs.readFile)(FILE_PATH, ENCODING).catch(() => {
       throw new Error(`${FILE_PATH} can not read.`);
     });
@@ -40,9 +40,9 @@ const createRecords = async () => {
   };
 
   const saveFile = async (data) => {
-    const FILE_PATH = '.kinmock/fixture/records.json';
-    await promisify(fs.mkdir)('.kinmock').catch(() => {});
-    await promisify(fs.mkdir)('.kinmock/fixture').catch(() => {});
+    const FILE_PATH = '.kintuba/fixture/records.json';
+    await promisify(fs.mkdir)('.kintuba').catch(() => {});
+    await promisify(fs.mkdir)('.kintuba/fixture').catch(() => {});
     await promisify(fs.writeFile)(FILE_PATH, JSON.stringify(data, null, '  '), {
       encoding: ENCODING,
     });

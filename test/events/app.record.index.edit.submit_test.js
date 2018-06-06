@@ -91,7 +91,7 @@ describe('app.record.index.edit.submit', () => {
     });
   });
 
-  describe('.kinmockディレクトリが無い場合', () => {
+  describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
       kintone.loadSchema('.');
       kintone.loadFixture('.');
