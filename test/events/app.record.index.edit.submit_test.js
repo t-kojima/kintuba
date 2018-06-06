@@ -45,9 +45,35 @@ describe('app.record.index.edit.submit', () => {
     assert.equal(actual.文字列__1行__AUTO_CALC.value, '');
   });
 
-  xdescribe('フィールドにエラーを表示する', () => {});
+  describe('フィールドにエラーを表示する', () => {
+    it('プロパティ上はエラーメッセージが設定される', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.数値.error = 'ERROR MESSAGE';
+        return event;
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+      });
 
-  xdescribe('画面の上部にエラーを表示する', () => {});
+      const actual = await getActual('1');
+      assert.equal(actual.数値.error, 'ERROR MESSAGE');
+    });
+  });
+
+  describe('画面の上部にエラーを表示する', () => {
+    it('エラーメッセージは保持されない', async () => {
+      kintone.events.on(method, (event) => {
+        event.error = 'ERROR MESSAGE';
+        return event;
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+      });
+
+      const actual = await getActual('1');
+      assert.isUndefined(actual.error);
+    });
+  });
 
   describe('return kintone.Promise', () => {
     xit('非同期処理を待ってイベントが走ること', async () => {});

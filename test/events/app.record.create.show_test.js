@@ -33,6 +33,14 @@ describe('app.record.create.show', () => {
       .catch(e => assert.equal(e.message, 'recordId option is required.'));
   });
 
+  it('reuseは常にfalseを返すこと', async () => {
+    kintone.events.on(method, event => event);
+    const event = await kintone.events.do(method, {
+      recordId: '1',
+    });
+    assert.isFalse(event.reuse);
+  });
+
   it('recordのフィールドを書き換えた時、値が反映されること', async () => {
     kintone.events.on(method, (event) => {
       event.record.数値.value = '999';
@@ -44,6 +52,20 @@ describe('app.record.create.show', () => {
 
     const actual = await getActual('1');
     assert.equal(actual.数値.value, '999');
+  });
+
+  describe('returnしない場合', () => {
+    it('recordのフィールドを書き換えた時、値が反映されないこと', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.数値.value = '999';
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+      });
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '99');
+    });
   });
 
   describe('return false', () => {
@@ -106,7 +128,18 @@ describe('app.record.create.show', () => {
     });
   });
 
-  xdescribe('ルックアップの取得を自動で行う', () => {});
+  describe('ルックアップの取得を自動で行う場合', () => {
+    it('ルックアップ先に反映させない', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.ルックアップ.lookup = true;
+        event.record.ルックアップ.value = 'テスト';
+      });
+      await kintone.events.do(method, { recordId: '1' });
+
+      const actual = await getActual('1');
+      assert.equal(actual['文字列__1行_'].value, 'DUMMY');
+    });
+  });
 
   xdescribe('フィールドの表示／非表示を切り替える', () => {});
 });

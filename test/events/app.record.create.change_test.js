@@ -29,7 +29,18 @@ describe('app.record.create.change.<フィールド>', () => {
     xit('changes.rowはnullであること', async () => {});
   });
 
-  xdescribe('ルックアップの取得を自動で行う', () => {});
+  describe('ルックアップの取得を自動で行う場合', () => {
+    it('ルックアップ先に反映させない', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.ルックアップ.lookup = true;
+        event.record.ルックアップ.value = 'テスト';
+      });
+      await kintone.events.do(method, { recordId: '1', value: '99' });
+
+      const actual = await getActual('1');
+      assert.equal(actual['文字列__1行_'].value, 'DUMMY');
+    });
+  });
 
   xdescribe('フィールドの表示／非表示を切り替える', () => {});
 });

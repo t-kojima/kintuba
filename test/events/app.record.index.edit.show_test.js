@@ -51,7 +51,20 @@ describe('app.record.index.edit.show', () => {
     assert.equal(actual.数値.value, '99');
   });
 
-  xdescribe('フィールドの編集可／不可を設定する', () => {});
+  describe('フィールドの編集可／不可を設定する', () => {
+    it('プロパティ上は編集不可となる', async () => {
+      kintone.events.on(method, (event) => {
+        event.record.数値.disabled = true;
+        return event;
+      });
+      await kintone.events.do(method, {
+        recordId: '1',
+      });
+
+      const actual = await getActual('1');
+      assert.isTrue(actual.数値.disabled);
+    });
+  });
 
   describe('.kinmockディレクトリが無い場合', () => {
     before(() => {
