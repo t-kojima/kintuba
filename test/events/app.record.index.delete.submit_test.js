@@ -47,7 +47,24 @@ describe('app.record.index.delete.submit', () => {
   });
 
   describe('return kintone.Promise', () => {
-    xit('非同期処理を待ってイベントが走ること', async () => {});
+    it('非同期処理を待ってイベントが走ること', async () => {
+      kintone.events.on(method, event =>
+        new kintone.Promise((resolve) => {
+          // レコード0件
+          kintone.loadFixture('.');
+          resolve(getSize());
+        }).then((response) => {
+          if (response === 0) {
+            // レコード101件
+            kintone.loadFixture('.kintuba/handred');
+          }
+          return event;
+        }));
+      await kintone.events.do(method, { recordId: '1' });
+
+      const size = await getSize();
+      assert.equal(size, 100);
+    });
   });
 
   describe('.kintubaディレクトリが無い場合', () => {
