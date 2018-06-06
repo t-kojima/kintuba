@@ -1,0 +1,101 @@
+[
+  {
+    "$id": {
+      "type": "__ID__",
+      "value": "1"
+    },
+    "$revision": {
+      "type": "__REVISION__",
+      "value": "1"
+    },
+    "ステータス": {
+      "type": "STATUS",
+      "value": "init"
+    },
+    "レコード番号": {
+      "type": "RECORD_NUMBER",
+      "value": "1"
+    },
+    "リッチエディター": {
+      "type": "RICH_TEXT",
+      "value": "<div>DUMMY2<br /></div>"
+    },
+    "更新者": {
+      "type": "MODIFIER",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "作成者": {
+      "type": "CREATOR",
+      "value": {
+        "code": "no-name@example.com",
+        "name": "no-name@example.com"
+      }
+    },
+    "文字列__1行_": {
+      "type": "SINGLE_LINE_TEXT",
+      "value": "FIXTURE2_DATA"
+    },
+    "ラジオボタン": {
+      "type": "RADIO_BUTTON",
+      "value": "sample1"
+    },
+    "ドロップダウン": {
+      "type": "DROP_DOWN",
+      "value": "sample1"
+    },
+    "更新日時": {
+      "type": "UPDATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    },
+    "日時": {
+      "type": "DATETIME",
+      "value": "2018-05-18T03:07:00Z"
+    },
+    "時刻": {
+      "type": "TIME",
+      "value": "01:00"
+    },
+    "チェックボックス": {
+      "type": "CHECK_BOX",
+      "value": ["sample1"]
+    },
+    "文字列__複数行_": {
+      "type": "MULTI_LINE_TEXT",
+      "value": "DUMMY1\nDUMMY2\n"
+    },
+    "複数選択": {
+      "type": "MULTI_SELECT",
+      "value": ["sample1", "sample2"]
+    },
+    "数値": {
+      "type": "NUMBER",
+      "value": "77"
+    },
+    "添付ファイル": {
+      "type": "FILE",
+      "value": [
+        {
+          "fileKey": "R0E8D52A09112155D7B1EAB82CVEEAA6F2D62E83AF563B670",
+          "name": "DUMMY.txt",
+          "contentType": "text/plain",
+          "size": "0"
+        }
+      ]
+    },
+    "作成日時": {
+      "type": "CREATED_TIME",
+      "value": "2018-05-18T03:07:00Z"
+    },
+    "計算": {
+      "type": "CALC",
+      "value": "990"
+    },
+    "日付": {
+      "type": "DATE",
+      "value": "2018-05-18"
+    }
+  }
+]

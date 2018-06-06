@@ -1,0 +1,14 @@
+{
+  "id": "99",
+  "code": "no-name",
+  "name": "no-name",
+  "email": "no-name@example.com",
+  "url": "http:example.com",
+  "employeeNumber": "100",
+  "phone": "03-0000-0000",
+  "mobilePhone": "090-0000-0000",
+  "extensionNumber": "1001",
+  "timezone": "Asia/Tokyo",
+  "isGuest": false,
+  "language": "ja"
+}

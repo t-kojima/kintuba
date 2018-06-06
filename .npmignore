@@ -1,0 +1,6 @@
+.kintuba/
+.vscode/
+lib/
+test/
+.travis.yml
+yarn.lock

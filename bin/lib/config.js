@@ -4,11 +4,11 @@ const fs = require('fs');
 const { promisify } = require('util');
 const { Validator } = require('jsonschema');
 
-const FILE_PATH = '.kinmock.json';
+const FILE_PATH = '.kintuba.json';
 const ENCODING = 'utf8';
 
 const schema = {
-  description: 'validation for kinmock config json',
+  description: 'validation for kintuba config json',
   type: 'object',
   required: ['domain', 'username', 'password', 'app'],
   additionalProperties: false,

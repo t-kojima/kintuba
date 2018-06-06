@@ -1,6 +1,36 @@
 {
   "properties": [
     {
+      "type": "RECORD_NUMBER",
+      "label": "レコード番号",
+      "noLabel": "false",
+      "code": "レコード番号"
+    },
+    {
+      "type": "MODIFIER",
+      "label": "更新者",
+      "noLabel": "false",
+      "code": "更新者"
+    },
+    {
+      "type": "CREATOR",
+      "label": "作成者",
+      "noLabel": "false",
+      "code": "作成者"
+    },
+    {
+      "type": "UPDATED_TIME",
+      "label": "更新日時",
+      "noLabel": "false",
+      "code": "更新日時"
+    },
+    {
+      "type": "CREATED_TIME",
+      "label": "作成日時",
+      "noLabel": "false",
+      "code": "作成日時"
+    },
+    {
       "type": "SINGLE_LINE_TEXT",
       "label": "文字列 (1行)",
       "noLabel": "false",
@@ -142,6 +172,89 @@
       "noLabel": "false",
       "code": "添付ファイル",
       "required": "false"
+    },
+    {
+      "type": "SUBTABLE",
+      "code": "Table",
+      "fields": [
+        {
+          "type": "SINGLE_LINE_TEXT",
+          "label": "文字列 (1行)（テーブル）",
+          "noLabel": "false",
+          "code": "文字列__1行__Table",
+          "required": "false",
+          "minLength": null,
+          "maxLength": null,
+          "expression": "",
+          "hideExpression": "false",
+          "unique": "false",
+          "defaultValue": ""
+        },
+        {
+          "type": "NUMBER",
+          "label": "数値（テーブル）",
+          "noLabel": "false",
+          "code": "数値_Table",
+          "required": "false",
+          "minValue": null,
+          "maxValue": null,
+          "digit": "false",
+          "unique": "false",
+          "defaultValue": null,
+          "displayScale": null,
+          "unit": null,
+          "unitPosition": "BEFORE"
+        }
+      ]
+    },
+    {
+      "type": "USER_SELECT",
+      "label": "ユーザー選択",
+      "noLabel": "false",
+      "code": "ユーザー選択",
+      "required": "false"
+    },
+    {
+      "type": "ORGANIZATION_SELECT",
+      "label": "組織選択",
+      "noLabel": "false",
+      "code": "組織選択",
+      "required": "false"
+    },
+    {
+      "type": "GROUP_SELECT",
+      "label": "グループ選択",
+      "noLabel": "false",
+      "code": "グループ選択",
+      "required": "false"
+    },
+    {
+      "type": "SINGLE_LINE_TEXT",
+      "label": "文字列 (1行)（自動計算）",
+      "noLabel": "false",
+      "code": "文字列__1行__AUTO_CALC",
+      "required": "false",
+      "minLength": null,
+      "maxLength": null,
+      "expression": "数値",
+      "hideExpression": "false",
+      "unique": "false",
+      "defaultValue": ""
+    },
+    {
+      "type": "REFERENCE_TABLE",
+      "label": "関連レコード一覧",
+      "noLabel": "false",
+      "code": "関連レコード一覧",
+      "relatedApp": "2"
+    },
+    {
+      "type": "SINGLE_LINE_TEXT",
+      "label": "ルックアップ",
+      "noLabel": "false",
+      "code": "ルックアップ",
+      "required": "false",
+      "relatedApp": "5"
     }
   ]
 }
