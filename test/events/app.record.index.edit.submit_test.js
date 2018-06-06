@@ -76,7 +76,18 @@ describe('app.record.index.edit.submit', () => {
   });
 
   describe('return kintone.Promise', () => {
-    xit('非同期処理を待ってイベントが走ること', async () => {});
+    it('非同期処理を待ってイベントが走ること', async () => {
+      kintone.events.on(method, event => new kintone.Promise((resolve) => {
+        resolve('999');
+      }).then((response) => {
+        event.record.数値.value = response;
+        return event;
+      }));
+      await kintone.events.do(method, { recordId: '1' });
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '999');
+    });
   });
 
   describe('returnしない場合', () => {

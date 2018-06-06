@@ -189,5 +189,25 @@ describe('app.record.detail.process.proceed', () => {
       const actual = await getActual('1');
       assert.equal(actual.数値.value, '99');
     });
+
+    it('rejectをcatchできること', async () => {
+      kintone.events.on(method, event =>
+        new kintone.Promise((resolve, reject) => {
+          reject('999');
+        })
+          .then(() => event)
+          .catch((e) => {
+            event.record.数値.value = e;
+            return event;
+          }));
+      await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '999');
+    });
   });
 });
