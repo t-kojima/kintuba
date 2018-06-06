@@ -246,7 +246,7 @@
       "label": "関連レコード一覧",
       "noLabel": "false",
       "code": "関連レコード一覧",
-      "relatedApp": "2"
+      "relatedApp": "5"
     },
     {
       "type": "SINGLE_LINE_TEXT",
@@ -255,6 +255,10 @@
       "code": "ルックアップ",
       "required": "false",
       "relatedApp": "5"
+    },
+    {
+      "type": "SPACER",
+      "elementId": "sp"
     }
   ]
 }

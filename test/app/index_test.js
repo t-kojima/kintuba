@@ -55,7 +55,7 @@ describe('getRelatedRecordsTargetAppId', () => {
   describe('関連レコード一覧の場合', () => {
     it('関連レコード一覧ののappIdが返ること', async () => {
       const actual = kintone.app.getRelatedRecordsTargetAppId('関連レコード一覧');
-      assert.equal(actual, '2');
+      assert.equal(actual, '5');
     });
   });
 

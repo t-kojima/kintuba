@@ -1,5 +1,5 @@
 {
-  "revision": "44",
+  "revision": "52",
   "properties": {
     "レコード番号": {
       "type": "RECORD_NUMBER",
@@ -248,18 +248,19 @@
       "noLabel": false,
       "referenceTable": {
         "relatedApp": {
-          "app": "2",
+          "app": "5",
           "code": ""
         },
         "condition": {
           "field": "文字列__1行_",
-          "relatedField": "文字列__1行_"
+          "relatedField": "company"
         },
         "filterCond": "",
         "displayFields": [
-          "文字列__1行_"
+          "company",
+          "division"
         ],
-        "sort": "レコード番号 desc",
+        "sort": "record_no desc",
         "size": "5"
       }
     },
