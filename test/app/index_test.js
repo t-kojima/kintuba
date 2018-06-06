@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 require('../../lib');
 const { assert } = require('chai');
+const should = require('chai').should();
 
 describe('getId', () => {
   it('schemaのappIdが返ること', async () => {
@@ -112,4 +113,92 @@ describe('getQueryCondition', () => {
 
 describe('getQuery', () => {
   // getQueryConditionと同一の挙動とする
+});
+
+describe('getFieldElements', () => {
+  describe('レコード一覧画面', () => {
+    const method = 'app.record.index.show';
+    afterEach(() => kintone.events.off(method));
+
+    it('ReferenceErrorになること（本来空divを返す）', async () => {
+      await kintone.events.do(method);
+      (() => kintone.app.getFieldElements('数値')).should.throw(
+        ReferenceError,
+        'document is not defined',
+      );
+    });
+
+    describe('レコードが0件の場合', () => {
+      before(async () => {
+        kintone.loadFixture('.kintuba/fixture2');
+        const del = 'app.record.index.delete.submit';
+        kintone.events.on(del, event => event);
+        await kintone.events.do(del, { recordId: '1' });
+        kintone.events.off(del);
+      });
+      after(() => kintone.loadDefault());
+
+      it('空配列が返ること', async () => {
+        await kintone.events.do(method);
+        const actual = kintone.app.getFieldElements('数値');
+        assert.deepEqual(actual, []);
+      });
+    });
+  });
+
+  describe('レコード詳細画面', () => {
+    const method = 'app.record.detail.show';
+    afterEach(() => kintone.events.off(method));
+
+    it('nullが返ること', async () => {
+      await kintone.events.do(method, { recordId: '1' });
+      const actual = kintone.app.getFieldElements('数値');
+      assert.isNull(actual);
+    });
+  });
+
+  describe('.kintubaディレクトリが無い場合', () => {
+    const method = 'app.record.index.show';
+    before(() => {
+      kintone.loadSchema('.');
+      kintone.loadFixture('.');
+    });
+    after(() => kintone.loadDefault());
+
+    it('nullが返ること', async () => {
+      await kintone.events.do(method);
+      const actual = kintone.app.getFieldElements('数値');
+      assert.isNull(actual);
+    });
+  });
+});
+
+describe('getHeaderSpaceElement', () => {
+  describe('レコード一覧画面', () => {
+    const method = 'app.record.index.show';
+    afterEach(() => kintone.events.off(method));
+
+    it('ReferenceErrorになること（本来document.bodyを返す）', async () => {
+      await kintone.events.do(method);
+      (() => kintone.app.getHeaderSpaceElement()).should.throw(
+        ReferenceError,
+        'document is not defined',
+      );
+    });
+  });
+
+  describe('レコード詳細画面', () => {
+    const method = 'app.record.detail.show';
+    afterEach(() => kintone.events.off(method));
+
+    it('nullが返ること', async () => {
+      await kintone.events.do(method, { recordId: '1' });
+      const actual = kintone.app.getHeaderSpaceElement();
+      assert.isNull(actual);
+    });
+  });
+});
+
+describe('getHeaderMenuSpaceElement', () => {
+  // getHeaderSpaceElementと同一
 });
