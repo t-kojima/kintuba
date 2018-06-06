@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-require('../lib');
+require('../../lib');
 const { assert } = require('chai');
 
 describe('kintone.app.record', () => {
