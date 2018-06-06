@@ -42,4 +42,8 @@ describe('kintone関数', () => {
       });
     });
   });
+
+  describe('getQuery', () => {
+    // getQueryConditionと同一の挙動とする
+  });
 });
