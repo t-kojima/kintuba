@@ -152,6 +152,42 @@ describe('app.record.detail.process.proceed', () => {
   });
 
   describe('kintone.Promiseオブジェクトをreturnした場合', () => {
-    xit('非同期処理の実行を待ってイベントの処理を開始すること', async () => {});
+    it('非同期処理の実行を待ってイベントの処理を開始すること', async () => {
+      kintone.events.on(method, event =>
+        new kintone.Promise((resolve) => {
+          resolve('999');
+        }).then((response) => {
+          event.record.数値.value = response;
+          return event;
+        }));
+      await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '999');
+    });
+
+    it('thenしない場合は反映されない', async () => {
+      kintone.events.on(
+        method,
+        event =>
+          new kintone.Promise((resolve) => {
+            event.record.数値.value = '999';
+            resolve('999');
+          }),
+      );
+      await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '99');
+    });
   });
 });
