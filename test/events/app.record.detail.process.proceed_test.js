@@ -121,6 +121,19 @@ describe('app.record.detail.process.proceed', () => {
       const actual = await getActual('1');
       assert.equal(actual.数値.value, '99');
     });
+
+    it('アクションがキャンセルされること', async () => {
+      kintone.events.on(method, () => false);
+      await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+
+      const actual = await getActual('1');
+      assert.equal(actual.ステータス.value, 'init');
+    });
   });
 
   describe('returnしない場合', () => {
@@ -142,13 +155,46 @@ describe('app.record.detail.process.proceed', () => {
   });
 
   describe('不正な値をreturnした場合', () => {
-    xit('アクションがキャンセルされること', async () => {
+    it('エラーが設定され、アクションがキャンセルされること', async () => {
       // 不正な値ってなんだろう…？
+      kintone.events.on(method, (event) => {
+        event.record.数値.value = '999';
+        return 'INVALID VALUE';
+      });
+      const event = await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+      // assert.equal(event.error, 'ERROR MESSAGE');
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '99');
+      assert.equal(actual.ステータス.value, 'init');
     });
   });
 
   describe('errorプロパティを設定してreturnした場合', () => {
-    xit('アラートが表示され、アクションがキャンセルされること', async () => {});
+    it('アクションがキャンセルされること', async () => {
+      // アラートは表示されない
+      kintone.events.on(method, (event) => {
+        event.error = 'ERROR MESSAGE';
+        event.record.数値.value = '999';
+        return event;
+      });
+      const event = await kintone.events.do(method, {
+        recordId: '1',
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+      assert.equal(event.error, 'ERROR MESSAGE');
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '99');
+      assert.equal(actual.ステータス.value, 'init');
+    });
   });
 
   describe('kintone.Promiseオブジェクトをreturnした場合', () => {
