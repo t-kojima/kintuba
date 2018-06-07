@@ -20,7 +20,7 @@ describe('app.record.create.show', () => {
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
     const event = await kintone.events.do(method, {
-      recordId: '1',
+      recordId: 1,
     });
     assert.equal(event.type, method);
   });
@@ -36,7 +36,7 @@ describe('app.record.create.show', () => {
   it('reuseは常にfalseを返すこと', async () => {
     kintone.events.on(method, event => event);
     const event = await kintone.events.do(method, {
-      recordId: '1',
+      recordId: 1,
     });
     assert.isFalse(event.reuse);
   });
