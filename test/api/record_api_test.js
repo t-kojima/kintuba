@@ -2,6 +2,14 @@
 require('../../lib');
 const { assert } = require('chai');
 
+const getActual = async (id) => {
+  const method = 'app.record.index.edit.show';
+  kintone.events.on(method, event => event);
+  const event = await kintone.events.do(method, { recordId: id });
+  kintone.events.off(method);
+  return event.record;
+};
+
 describe('record GET', () => {
   it('レコードが取得できること（コールバック）', async () => {
     let actual;
@@ -159,7 +167,8 @@ describe('record GET', () => {
 
 describe('record POST', () => {
   afterEach(() => kintone.loadDefault());
-  xit('レコードが登録できること（コールバック）', async () => {
+
+  it('レコードが登録できること（コールバック）', async () => {
     let actual;
     await kintone.api(
       '/k/v1/record',
@@ -179,26 +188,49 @@ describe('record POST', () => {
         actual = err.message;
       },
     );
-    assert.equal(actual, {
+    assert.deepEqual(actual, {
       id: '4',
       revision: '1',
     });
   });
 
-  xit('レコードが登録できること（kintone.Promise）', async () => {
+  it('レコードが登録できること（kintone.Promise）', async () => {
     let actual;
-    await kintone.api('/k/v1/record', 'POST', { app: 2, id: 1 }).then(
-      (resolve) => {
-        actual = resolve;
-      },
-      (reject) => {
-        actual = reject.message;
-      },
-    );
-    assert.equal(actual, {
+    await kintone
+      .api('/k/v1/record', 'POST', {
+        app: 2,
+        record: {
+          文字列__1行: {
+            value: 'ABC',
+          },
+        },
+      })
+      .then(
+        (resolve) => {
+          actual = resolve;
+        },
+        (reject) => {
+          actual = reject.message;
+        },
+      );
+    assert.deepEqual(actual, {
       id: '4',
       revision: '1',
     });
+  });
+
+  it('未設定の項目が初期値で補完されること（kintone.Promise）', async () => {
+    await kintone.api('/k/v1/record', 'POST', {
+      app: 2,
+      record: {
+        数値: {
+          value: 1234,
+        },
+      },
+    });
+    const record = await getActual(4);
+    assert.equal(record.数値.value, '1234');
+    assert.equal(record.ラジオボタン.value, 'sample1');
   });
 
   describe('appが誤っている場合', () => {
