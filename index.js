@@ -913,6 +913,14 @@ const Event = require('./event');
 const schema = require('./schema');
 const fixture = require('./fixture');
 
+const parse = (value, defaultValue = {}) => {
+  try {
+    return JSON.parse(value);
+  } catch (e) {
+    return defaultValue;
+  }
+};
+
 class Kintuba {
   constructor() {
     this.app = new App();
@@ -935,34 +943,34 @@ class Kintuba {
     this.schema = {
       app: {
         set: (contents) => {
-          schema.app = JSON.parse(contents);
+          schema.app = parse(contents);
         },
       },
       fields: {
         set: (contents) => {
-          schema.fields = JSON.parse(contents);
+          schema.fields = parse(contents);
         },
       },
       form: {
         set: (contents) => {
-          schema.form = JSON.parse(contents);
+          schema.form = parse(contents);
         },
       },
       views: {
         set: (contents) => {
-          schema.views = JSON.parse(contents);
+          schema.views = parse(contents);
         },
       },
     };
     this.fixture = {
       login: {
         set: (contents) => {
-          fixture.login = JSON.parse(contents);
+          fixture.login = parse(contents);
         },
       },
       records: {
         set: (contents) => {
-          fixture.records = JSON.parse(contents);
+          fixture.records = parse(contents, []);
         },
       },
     };
