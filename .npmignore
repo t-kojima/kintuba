@@ -2,5 +2,6 @@
 .vscode/
 lib/
 test/
+.gitignore
 .travis.yml
 yarn.lock

@@ -5,35 +5,35 @@
 
 kintuba is stub for a unittest, it can use the kintone global object.
 
-kintuba は単体テストで利用できる**kintone**オブジェクトのモックです。
+kintuba は単体テストで利用できる**kintone**オブジェクトのスタブです。
 
-# Description
+## Description
 
-kintuba は`node.js`上で動作する**kintone**オブジェクトのモックです。kintone カスタマイズの JavaScript をローカル開発環境でテストする際に使用できます。
+kintuba は`node.js`上で動作する**kintone**オブジェクトのスタブです。kintone カスタマイズの JavaScript をローカル開発環境でテストする際に使用できます。
 
 `document`へアクセスするコードをテストする場合は、karma プラグインを併せて利用して下さい。
 
-https://github.com/t-kojima/karma-kintuba
+[https://github.com/t-kojima/karma-kintuba](https://github.com/t-kojima/karma-kintuba)
 
-# Warning
+## Warning
 
 kintuba は`require`されるとグローバルの`kintone`オブジェクトを**上書き**します。（これは kintone にアップロードする JavaScript ファイルをそのままテストできるようにする為です。）
 
 ローカルでのテストでのみの使用とし、本番環境では使用しないで下さい。
 
-# Install
+## Install
 
-```
-$ npm install --save-dev kintuba
+```bash
+npm install --save-dev kintuba
 ```
 
 or
 
-```
-$ yarn add --dev kintuba
+```bash
+yarn add --dev kintuba
 ```
 
-# Usage
+## Usage
 
 テストコードで`require`して下さい。以後テストコード及びテスト対象コードで`kintone`オブジェクトが利用できます。
 
@@ -41,54 +41,56 @@ $ yarn add --dev kintuba
 require('kintuba');
 ```
 
-## イベントの実行
+### イベントの実行
 
 kintone では画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので、kintuba ではイベントを実行する関数を用意しています。
 
 `kintone.events.on`でイベントを登録するのに対し、`kintone.events.do`でイベントを実行します。
 
-```javascript
+```js
 kintone.events.on('app.record.index.show', (event) => {
   console.log('event done');
 });
 
-kintone.events.do('app.record.index.show');
+await kintone.events.do('app.record.index.show');
 
 => event done
 ```
 
 また、レコード詳細画面を開いた場合など、特定の状況を表現する場合は`option`を指定します。
 
-```javascript
+```js
 kintone.events.on('app.record.detail.show', (event) => {
   console.log(event.record.$id.value);
 });
-kintone.events.do('app.record.detail.show', { recordId: '2' });
+await kintone.events.do('app.record.detail.show', { recordId: '2' });
 
 => 2
 ```
 
-## テストデータの利用
+尚、`kintone.events.do`は非同期で動作する点注意して下さい。
+
+### テストデータの利用
 
 kintuba を`require`しただけではデータが存在しない為、`event.records`などにアクセスしても空配列が返ってしまいます。テスト用のデータを取得できるようにする為には、以下の手順で予めテストデータを準備する必要があります。尚、以下の手順では`kintone REST API`を利用して対象アプリの情報を取得します。
 
-### kintone REST API 認証ファイルの作成
+#### kintone REST API 認証ファイルの作成
 
 `kintuba init`コマンドで認証用テンプレートを作成します。
 
-```
-$ npx kintuba init
+```bash
+npx kintuba init
 ```
 
 or
 
-```
-$ yarn kintuba init
+```bash
+yarn kintuba init
 ```
 
 カレントディレクトリに`.kintuba.json`が作成されるので、各パラメータを設定します。
 
-```
+```json
 {
   "domain": "<subdomain>.cybozu.com",
   "app": <app id>,
@@ -97,18 +99,18 @@ $ yarn kintuba init
 }
 ```
 
-### 対象アプリ情報の取得
+#### 対象アプリ情報の取得
 
 作成した認証用ファイルを使用し、kintone REST API からアプリ情報を取得します。
 
-```
-$ npx kintuba fetch
+```bash
+npx kintuba fetch
 ```
 
 or
 
-```
-$ yarn kintuba fetch
+```bash
+yarn kintuba fetch
 ```
 
 `.kintuba`ディレクトリが作成され、以下のファイルが生成されます。
@@ -126,7 +128,7 @@ $ yarn kintuba fetch
 
 `fixture`ディレクトリはテストデータ入力用のテンプレートが生成されます。
 
-### テストデータの入力
+#### テストデータの入力
 
 `fixture`ディレクトリのテンプレートへテストデータを登録します。
 
@@ -157,7 +159,7 @@ $ yarn kintuba fetch
 
 以上、`fixture`ディレクトリのファイルにテストデータを登録することで、kintubaのテストデータが利用できます。
 
-```javascript
+```js
 kintone.events.on('app.record.index.show', (event) => {
     console.log(event.records[0]["文字列__1行_"].value);
 });
@@ -165,8 +167,6 @@ kintone.events.on('app.record.index.show', (event) => {
 => 'テストデータ'
 ```
 
-# examples
-
-# Licence
+## Licence
 
 MIT License.
