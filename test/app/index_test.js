@@ -1,7 +1,11 @@
 /* eslint-disable no-undef */
 require('../../lib');
+const schema = require('../../lib/schema');
+const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 const should = require('chai').should();
+
+schema.load();
 
 describe('getId', () => {
   it('schemaのappIdが返ること', async () => {
@@ -11,10 +15,13 @@ describe('getId', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.loadSchema('.');
-      kintone.loadFixture('.');
+      schema.load('.');
+      fixture.load('.');
     });
-    after(() => kintone.loadDefault());
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
 
     it('nullが返ること', async () => {
       const actual = kintone.app.getId();
@@ -40,10 +47,13 @@ describe('getLookupTargetAppId', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.loadSchema('.');
-      kintone.loadFixture('.');
+      schema.load('.');
+      fixture.load('.');
     });
-    after(() => kintone.loadDefault());
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
 
     it('nullが返ること', async () => {
       const actual = kintone.app.getLookupTargetAppId('ルックアップ');
@@ -69,10 +79,13 @@ describe('getRelatedRecordsTargetAppId', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.loadSchema('.');
-      kintone.loadFixture('.');
+      schema.load('.');
+      fixture.load('.');
     });
-    after(() => kintone.loadDefault());
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
 
     it('nullが返ること', async () => {
       const actual = kintone.app.getRelatedRecordsTargetAppId('関連レコード一覧');
@@ -130,13 +143,16 @@ describe('getFieldElements', () => {
 
     describe('レコードが0件の場合', () => {
       before(async () => {
-        kintone.loadFixture('.kintuba/fixture2');
+        fixture.load('.kintuba/fixture2');
         const del = 'app.record.index.delete.submit';
         kintone.events.on(del, event => event);
         await kintone.events.do(del, { recordId: '1' });
         kintone.events.off(del);
       });
-      after(() => kintone.loadDefault());
+      after(() => {
+        schema.load();
+        fixture.load();
+      });
 
       it('空配列が返ること', async () => {
         await kintone.events.do(method);
@@ -160,10 +176,13 @@ describe('getFieldElements', () => {
   describe('.kintubaディレクトリが無い場合', () => {
     const method = 'app.record.index.show';
     before(() => {
-      kintone.loadSchema('.');
-      kintone.loadFixture('.');
+      schema.load('.');
+      fixture.load('.');
     });
-    after(() => kintone.loadDefault());
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
 
     it('nullが返ること', async () => {
       await kintone.events.do(method);

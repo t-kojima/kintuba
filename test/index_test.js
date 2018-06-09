@@ -1,6 +1,11 @@
 /* eslint-disable no-undef */
 require('../lib');
+const schema = require('../lib/schema');
+const fixture = require('../lib/fixture');
 const { assert } = require('chai');
+
+schema.load();
+fixture.load();
 
 describe('kintone関数', () => {
   it('UI Versionが2であること', () => {
