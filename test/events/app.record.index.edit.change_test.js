@@ -1,6 +1,11 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
+const schema = require('../../lib/schema');
+const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
+
+schema.load();
+// fixture.load();
 
 const getActual = async (id) => {
   const method = 'app.record.index.edit.show';
@@ -12,10 +17,8 @@ const getActual = async (id) => {
 
 describe('app.record.index.edit.change.<フィールド>', () => {
   const method = 'app.record.index.edit.change.数値';
-  afterEach(() => {
-    kintone.events.off(method);
-    kintone.loadDefault();
-  });
+  beforeEach(() => fixture.load());
+  afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
@@ -195,10 +198,13 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.loadSchema('.');
-      kintone.loadFixture('.');
+      schema.load('.');
+      fixture.load('.');
     });
-    after(() => kintone.loadDefault());
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
 
     it('イベントが発火しないこと', async () => {
       kintone.events.on(method, event => event);

@@ -1,5 +1,6 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
+const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -12,15 +13,13 @@ const getActual = async (id) => {
 
 describe('app.record.create.show', () => {
   const method = 'app.record.create.show';
-  afterEach(() => {
-    kintone.events.off(method);
-    kintone.loadDefault();
-  });
+  beforeEach(() => fixture.load());
+  afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
     const event = await kintone.events.do(method, {
-      recordId: '1',
+      recordId: 1,
     });
     assert.equal(event.type, method);
   });
@@ -36,7 +35,7 @@ describe('app.record.create.show', () => {
   it('reuseは常にfalseを返すこと', async () => {
     kintone.events.on(method, event => event);
     const event = await kintone.events.do(method, {
-      recordId: '1',
+      recordId: 1,
     });
     assert.isFalse(event.reuse);
   });

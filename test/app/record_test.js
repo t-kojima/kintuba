@@ -1,6 +1,11 @@
 /* eslint-disable no-undef */
-require('../lib');
+require('../../lib');
+const schema = require('../../lib/schema');
+const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
+const should = require('chai').should();
+
+schema.load();
 
 describe('kintone.app.record', () => {
   describe('kintone.app.record.getId()', () => {
@@ -90,11 +95,13 @@ describe('kintone.app.record', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.loadSchema('.');
-      kintone.loadFixture('.');
+      schema.load('.');
+      fixture.load('.');
     });
-
-    after(() => kintone.loadDefault());
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
 
     describe('app.record.detail.show', () => {
       const method = 'app.record.detail.show';
@@ -110,6 +117,76 @@ describe('kintone.app.record', () => {
         kintone.events.on(method, event => event);
         await kintone.events.do(method, { recordId: '3' });
         assert.isNull(kintone.app.record.getId());
+      });
+    });
+  });
+
+  describe('getFieldElement', () => {
+    describe('レコード詳細・印刷画面', () => {
+      const method = 'app.record.detail.show';
+      afterEach(() => kintone.events.off(method));
+
+      it('ReferenceErrorになること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
+        (() => kintone.app.record.getFieldElement('数値')).should.throw(
+          ReferenceError,
+          'document is not defined',
+        );
+      });
+
+      it('nullが返ること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
+        const actual = kintone.app.record.getFieldElement('存在しないフィールド');
+        assert.isNull(actual);
+      });
+    });
+
+    describe('レコード一覧画面', () => {
+      const method = 'app.record.index.show';
+      afterEach(() => kintone.events.off(method));
+
+      it('nullが返ること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method);
+        const actual = kintone.app.record.getFieldElement('数値');
+        assert.isNull(actual);
+      });
+    });
+  });
+
+  describe('getSpaceElement', () => {
+    describe('レコード詳細・印刷画面', () => {
+      const method = 'app.record.detail.show';
+      afterEach(() => kintone.events.off(method));
+
+      it('ReferenceErrorになること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
+        (() => kintone.app.record.getSpaceElement('sp')).should.throw(
+          ReferenceError,
+          'document is not defined',
+        );
+      });
+
+      it('nullが返ること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method, { recordId: '1' });
+        const actual = kintone.app.record.getSpaceElement('存在しない要素ID');
+        assert.isNull(actual);
+      });
+    });
+
+    describe('レコード一覧画面', () => {
+      const method = 'app.record.index.show';
+      afterEach(() => kintone.events.off(method));
+
+      it('nullが返ること', async () => {
+        kintone.events.on(method, event => event);
+        await kintone.events.do(method);
+        const actual = kintone.app.record.getSpaceElement('sp');
+        assert.isNull(actual);
       });
     });
   });

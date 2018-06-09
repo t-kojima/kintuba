@@ -1,6 +1,10 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
+const schema = require('../../lib/schema');
+const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
+
+schema.load();
 
 const getActual = async (id) => {
   const method = 'app.record.index.edit.show';
@@ -12,10 +16,8 @@ const getActual = async (id) => {
 
 describe('app.record.index.edit.submit', () => {
   const method = 'app.record.index.edit.submit';
-  afterEach(() => {
-    kintone.events.off(method);
-    kintone.loadDefault();
-  });
+  beforeEach(() => fixture.load());
+  afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
@@ -76,7 +78,19 @@ describe('app.record.index.edit.submit', () => {
   });
 
   describe('return kintone.Promise', () => {
-    xit('非同期処理を待ってイベントが走ること', async () => {});
+    it('非同期処理を待ってイベントが走ること', async () => {
+      kintone.events.on(method, event =>
+        new kintone.Promise((resolve) => {
+          resolve('999');
+        }).then((response) => {
+          event.record.数値.value = response;
+          return event;
+        }));
+      await kintone.events.do(method, { recordId: '1' });
+
+      const actual = await getActual('1');
+      assert.equal(actual.数値.value, '999');
+    });
   });
 
   describe('returnしない場合', () => {
@@ -93,10 +107,13 @@ describe('app.record.index.edit.submit', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.loadSchema('.');
-      kintone.loadFixture('.');
+      schema.load('.');
+      fixture.load('.');
     });
-    after(() => kintone.loadDefault());
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
 
     it('イベントが発火すること', async () => {
       kintone.events.on(method, event => event);
