@@ -145,7 +145,7 @@ module.exports = class RecordApi {
 },{"./../fixture":16,"./../schema":18}],3:[function(require,module,exports){
 
 
-/* eslint-disable no-undef, class-methods-use-this */
+/* eslint-disable no-undef, class-methods-use-this, no-unused-vars */
 
 const Record = require('./../app/record');
 const schema = require('./../schema');
@@ -175,12 +175,21 @@ module.exports = class App {
   static FieldElements(type) {
     const allows = ['app.record.index'];
     const isAllow = () => allows.some(a => type.startsWith(a));
-    // eslint-disable-next-line no-unused-vars
+
     if (!isAllow() || !schema.fields.properties) return fieldCode => null;
-    // eslint-disable-next-line no-unused-vars
     if (fixture.records.length === 0) return fieldCode => [];
-    return fieldCode =>
-      (schema.fields.properties[fieldCode] ? document.createElement('div') : null);
+
+    return (fieldCode) => {
+      if (!schema.fields.properties[fieldCode]) return null;
+      function* gen() {
+        for (let i = 0; i < fixture.records.length; i += 1) {
+          const div = document.createElement('div');
+          document.body.appendChild(div);
+          yield div; // 空divを返す
+        }
+      }
+      return [...gen()];
+    };
   }
 
   getHeaderSpaceElement() {
