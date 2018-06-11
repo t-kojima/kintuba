@@ -10,3 +10,4 @@ docs/
 
 *.log
 *.lock
+.kintuba.json
