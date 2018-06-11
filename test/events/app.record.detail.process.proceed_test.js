@@ -1,5 +1,6 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
+const schema = require('../../lib/schema');
 const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
@@ -253,6 +254,29 @@ describe('app.record.detail.process.proceed', () => {
       });
       const actual = await getActual('1');
       assert.equal(actual.数値.value, '999');
+    });
+  });
+
+  describe('.kintubaディレクトリが無い場合', () => {
+    before(() => {
+      schema.load('.');
+      fixture.load('.');
+    });
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
+
+    it('存在しないidを指定した場合、undefinedが取得されること', async () => {
+      kintone.events.on(method, event => event);
+      const event = await kintone.events.do(method, {
+        recordId: 999,
+        action: 'test',
+        status: 'init',
+        nextStatus: 'next',
+      });
+      assert.isUndefined(event.recordId);
+      assert.isUndefined(event.record);
     });
   });
 });

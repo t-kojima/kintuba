@@ -52,7 +52,7 @@ kintone.events.on('app.record.index.show', (event) => {
   console.log('event done');
 });
 
-await kintone.events.do('app.record.index.show');
+kintone.events.do('app.record.index.show');
 
 => event done
 ```
@@ -63,7 +63,7 @@ await kintone.events.do('app.record.index.show');
 kintone.events.on('app.record.detail.show', (event) => {
   console.log(event.record.$id.value);
 });
-await kintone.events.do('app.record.detail.show', { recordId: '2' });
+kintone.events.do('app.record.detail.show', { recordId: '2' });
 
 => 2
 ```
@@ -93,7 +93,7 @@ yarn kintuba init
 ```json
 {
   "domain": "<subdomain>.cybozu.com",
-  "app": <app id>,
+  "app": "<app id>",
   "username": "<username>",
   "password": "<password>"
 }

@@ -212,4 +212,22 @@ describe('app.record.index.edit.change.<フィールド>', () => {
       assert.isNull(event);
     });
   });
+
+  describe('.kintuba/fixtureディレクトリが無い場合', () => {
+    before(() => {
+      schema.load();
+      fixture.load('.');
+    });
+    after(() => {
+      schema.load();
+      fixture.load();
+    });
+
+    it('存在しないidを指定した場合、undefinedが取得されること', async () => {
+      kintone.events.on(method, event => event);
+      const event = await kintone.events.do(method, { recordId: '999', value: '999' });
+      assert.isUndefined(event.recordId);
+      assert.isUndefined(event.record);
+    });
+  });
 });
