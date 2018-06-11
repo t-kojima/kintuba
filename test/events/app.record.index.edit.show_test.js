@@ -1,7 +1,5 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
-const schema = require('../../lib/schema');
-const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -14,7 +12,7 @@ const getActual = async (id) => {
 
 describe('app.record.index.edit.show', () => {
   const method = 'app.record.index.edit.show';
-  beforeEach(() => fixture.load());
+  beforeEach(() => kintone.fixture.load());
   afterEach(() => kintone.events.off(method));
 
   it('idが未指定の場合Errorになること', async () => {
@@ -68,12 +66,12 @@ describe('app.record.index.edit.show', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      schema.load('.');
-      fixture.load('.');
+      kintone.schema.load('.');
+      kintone.fixture.load('.');
     });
     after(() => {
-      schema.load();
-      fixture.load();
+      kintone.schema.load();
+      kintone.fixture.load();
     });
 
     it('idが未指定の場合Errorになること', async () => {
@@ -93,8 +91,8 @@ describe('app.record.index.edit.show', () => {
   });
 
   describe('fixture2 を読み込んだ場合', () => {
-    before(() => fixture.load('.kintuba/fixture2'));
-    after(() => fixture.load());
+    before(() => kintone.fixture.load('.kintuba/fixture2'));
+    after(() => kintone.fixture.load());
 
     it('idが未指定の場合Errorになること', async () => {
       kintone.events.on(method, event => event);

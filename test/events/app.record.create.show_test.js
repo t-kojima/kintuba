@@ -1,6 +1,5 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
-const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -13,7 +12,7 @@ const getActual = async (id) => {
 
 describe('app.record.create.show', () => {
   const method = 'app.record.create.show';
-  beforeEach(() => fixture.load());
+  beforeEach(() => kintone.fixture.load());
   afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {

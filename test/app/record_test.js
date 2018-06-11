@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 require('../../lib');
-const schema = require('../../lib/schema');
-const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 const should = require('chai').should();
 
-schema.load();
+kintone.schema.load();
 
 describe('kintone.app.record', () => {
+  before(() => kintone.fixture.load());
+
   describe('kintone.app.record.getId()', () => {
     describe('レコード詳細・編集・印刷画面', () => {
       const method = 'app.record.detail.show';
@@ -95,12 +95,12 @@ describe('kintone.app.record', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      schema.load('.');
-      fixture.load('.');
+      kintone.schema.load('.');
+      kintone.fixture.load('.');
     });
     after(() => {
-      schema.load();
-      fixture.load();
+      kintone.schema.load();
+      kintone.fixture.load();
     });
 
     describe('app.record.detail.show', () => {

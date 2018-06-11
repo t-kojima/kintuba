@@ -1,6 +1,13 @@
 .kintuba/
 .vscode/
+
 lib/
 test/
+docs/
+
+.gitignore
 .travis.yml
-yarn.lock
+
+*.log
+*.lock
+.kintuba.json

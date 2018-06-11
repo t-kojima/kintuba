@@ -1,11 +1,8 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
-const schema = require('../../lib/schema');
-const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
-schema.load();
-// fixture.load();
+kintone.schema.load();
 
 const getActual = async (id) => {
   const method = 'app.record.index.edit.show';
@@ -17,7 +14,7 @@ const getActual = async (id) => {
 
 describe('app.record.index.edit.change.<フィールド>', () => {
   const method = 'app.record.index.edit.change.数値';
-  beforeEach(() => fixture.load());
+  beforeEach(() => kintone.fixture.load());
   afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
@@ -198,18 +195,36 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      schema.load('.');
-      fixture.load('.');
+      kintone.schema.load('.');
+      kintone.fixture.load('.');
     });
     after(() => {
-      schema.load();
-      fixture.load();
+      kintone.schema.load();
+      kintone.fixture.load();
     });
 
     it('イベントが発火しないこと', async () => {
       kintone.events.on(method, event => event);
       const event = await kintone.events.do(method, { recordId: '1', value: '999' });
       assert.isNull(event);
+    });
+  });
+
+  describe('.kintuba/fixtureディレクトリが無い場合', () => {
+    before(() => {
+      kintone.schema.load();
+      kintone.fixture.load('.');
+    });
+    after(() => {
+      kintone.schema.load();
+      kintone.fixture.load();
+    });
+
+    it('存在しないidを指定した場合、undefinedが取得されること', async () => {
+      kintone.events.on(method, event => event);
+      const event = await kintone.events.do(method, { recordId: '999', value: '999' });
+      assert.isUndefined(event.recordId);
+      assert.isUndefined(event.record);
     });
   });
 });

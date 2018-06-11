@@ -145,7 +145,7 @@ module.exports = class RecordApi {
 },{"./../fixture":16,"./../schema":18}],3:[function(require,module,exports){
 
 
-/* eslint-disable no-undef, class-methods-use-this */
+/* eslint-disable no-undef, class-methods-use-this, no-unused-vars */
 
 const Record = require('./../app/record');
 const schema = require('./../schema');
@@ -175,12 +175,21 @@ module.exports = class App {
   static FieldElements(type) {
     const allows = ['app.record.index'];
     const isAllow = () => allows.some(a => type.startsWith(a));
-    // eslint-disable-next-line no-unused-vars
+
     if (!isAllow() || !schema.fields.properties) return fieldCode => null;
-    // eslint-disable-next-line no-unused-vars
     if (fixture.records.length === 0) return fieldCode => [];
-    return fieldCode =>
-      (schema.fields.properties[fieldCode] ? document.createElement('div') : null);
+
+    return (fieldCode) => {
+      if (!schema.fields.properties[fieldCode]) return null;
+      function* gen() {
+        for (let i = 0; i < fixture.records.length; i += 1) {
+          const div = document.createElement('div');
+          document.body.appendChild(div);
+          yield div;
+        }
+      }
+      return [...gen()]; // 空divの配列を返す
+    };
   }
 
   getHeaderSpaceElement() {
@@ -518,7 +527,7 @@ module.exports = class RecordChangeEventObject extends RecordEventObject {
       row: {},
     };
 
-    if (triggerNotCancel) {
+    if (triggerNotCancel && this.record) {
       this.record[getKey(this.type)].value = options.value;
       this.rollbackDisallowFields();
       fixture.update(this.record);
@@ -526,9 +535,11 @@ module.exports = class RecordChangeEventObject extends RecordEventObject {
   }
 
   done() {
-    this.record[getKey(this.type)].value = this.changes.field.value;
-    this.rollbackDisallowFields();
-    fixture.update(this.record);
+    if (this.record) {
+      this.record[getKey(this.type)].value = this.changes.field.value;
+      this.rollbackDisallowFields();
+      fixture.update(this.record);
+    }
   }
 
   static get TYPES() {
@@ -726,12 +737,14 @@ module.exports = class RecordProcessEventObject extends RecordEventObject {
     this.nextStatus = { value: options.nextStatus };
     this.error = null;
 
-    this.record.ステータス.value = this.nextStatus.value;
-    fixture.update(this.record);
+    if (this.record) {
+      this.record.ステータス.value = this.nextStatus.value;
+      fixture.update(this.record);
+    }
   }
 
   done() {
-    if (!this.error) {
+    if (!this.error && this.record) {
       this.rollbackDisallowFields();
       fixture.update(this.record);
     }
@@ -913,6 +926,14 @@ const Event = require('./event');
 const schema = require('./schema');
 const fixture = require('./fixture');
 
+const parse = (value, defaultValue = {}) => {
+  try {
+    return JSON.parse(value);
+  } catch (e) {
+    return defaultValue;
+  }
+};
+
 class Kintuba {
   constructor() {
     this.app = new App();
@@ -935,37 +956,39 @@ class Kintuba {
     this.schema = {
       app: {
         set: (contents) => {
-          schema.app = JSON.parse(contents);
+          schema.app = parse(contents);
         },
       },
       fields: {
         set: (contents) => {
-          schema.fields = JSON.parse(contents);
+          schema.fields = parse(contents);
         },
       },
       form: {
         set: (contents) => {
-          schema.form = JSON.parse(contents);
+          schema.form = parse(contents);
         },
       },
       views: {
         set: (contents) => {
-          schema.views = JSON.parse(contents);
+          schema.views = parse(contents);
         },
       },
     };
+    this.schema.load = dirname => schema.load(dirname);
     this.fixture = {
       login: {
         set: (contents) => {
-          fixture.login = JSON.parse(contents);
+          fixture.login = parse(contents);
         },
       },
       records: {
         set: (contents) => {
-          fixture.records = JSON.parse(contents);
+          fixture.records = parse(contents, []);
         },
       },
     };
+    this.fixture.load = dirname => fixture.load(dirname);
   }
 
   getLoginUser() {
@@ -983,14 +1006,6 @@ global.kintone = new Kintuba();
 },{"./api":1,"./app":3,"./app/record":4,"./event":6,"./fixture":16,"./schema":18}],18:[function(require,module,exports){
 
 
-exports.app = {};
-
-exports.views = {};
-
-exports.fields = {};
-
-exports.form = {};
-
 const fs = require('fs');
 
 const DIR_SCHEMA = '.kintuba/schema';
@@ -1004,17 +1019,13 @@ const loadFile = (filePath, defaults) => {
   }
 };
 
-// // アプリ情報
-// exports.app = (() => loadFile(`${DIR_SCHEMA}/app.json`, {}, true))();
+exports.app = {};
 
-// // ビューデータ
-// exports.views = (() => loadFile(`${DIR_SCHEMA}/views.json`, {}, true))();
+exports.views = {};
 
-// // フィールドデータ
-// exports.fields = (() => loadFile(`${DIR_SCHEMA}/fields.json`, {}, true))();
+exports.fields = {};
 
-// // フォームデータ
-// exports.form = (() => loadFile(`${DIR_SCHEMA}/form.json`, {}, true))();
+exports.form = {};
 
 exports.load = (dirname = DIR_SCHEMA) => {
   this.app = loadFile(`${dirname}/app.json`, {});
@@ -1456,28 +1467,24 @@ EventEmitter.prototype.removeAllListeners =
       return this;
     };
 
-function _listeners(target, type, unwrap) {
-  var events = target._events;
+EventEmitter.prototype.listeners = function listeners(type) {
+  var evlistener;
+  var ret;
+  var events = this._events;
 
   if (!events)
-    return [];
+    ret = [];
+  else {
+    evlistener = events[type];
+    if (!evlistener)
+      ret = [];
+    else if (typeof evlistener === 'function')
+      ret = [evlistener.listener || evlistener];
+    else
+      ret = unwrapListeners(evlistener);
+  }
 
-  var evlistener = events[type];
-  if (!evlistener)
-    return [];
-
-  if (typeof evlistener === 'function')
-    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
-
-  return unwrap ? unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
-}
-
-EventEmitter.prototype.listeners = function listeners(type) {
-  return _listeners(this, type, true);
-};
-
-EventEmitter.prototype.rawListeners = function rawListeners(type) {
-  return _listeners(this, type, false);
+  return ret;
 };
 
 EventEmitter.listenerCount = function(emitter, type) {
