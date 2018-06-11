@@ -1,5 +1,6 @@
 # kintuba
 
+[![npm version](https://badge.fury.io/js/kintuba.svg)](https://badge.fury.io/js/kintuba)
 [![Build Status](https://secure.travis-ci.org/t-kojima/kintuba.png?branch=master)](http://travis-ci.org/t-kojima/kintuba)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
