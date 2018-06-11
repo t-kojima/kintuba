@@ -5,13 +5,11 @@
 
 kintuba is stub for a unittest, it can use the kintone global object.
 
-kintuba は単体テストで利用できる**kintone**オブジェクトのスタブです。
-
 ## Description
 
 kintuba は`node.js`上で動作する**kintone**オブジェクトのスタブです。kintone カスタマイズの JavaScript をローカル開発環境でテストする際に使用できます。
 
-`document`へアクセスするコードをテストする場合は、karma プラグインを併せて利用して下さい。
+karma でブラウザを使用したテストをする場合は、karma プラグインを併せて利用して下さい。
 
 [https://github.com/t-kojima/karma-kintuba](https://github.com/t-kojima/karma-kintuba)
 
@@ -19,9 +17,9 @@ kintuba は`node.js`上で動作する**kintone**オブジェクトのスタブ�
 
 kintuba は`require`されるとグローバルの`kintone`オブジェクトを**上書き**します。（これは kintone にアップロードする JavaScript ファイルをそのままテストできるようにする為です。）
 
-ローカルでのテストでのみの使用とし、本番環境では使用しないで下さい。
+その為ローカルでのテストでのみの使用とし、本番環境では使用しないで下さい。
 
-## Install
+## Installation
 
 ```bash
 npm install --save-dev kintuba
@@ -43,7 +41,7 @@ require('kintuba');
 
 ### イベントの実行
 
-kintone では画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので、kintuba ではイベントを実行する関数を用意しています。
+kintone では画面の移動等でイベントが実行されますが、ローカル環境ではそのような動作ができませんので kintuba ではイベントを実行する関数を用意しています。
 
 `kintone.events.on`でイベントを登録するのに対し、`kintone.events.do`でイベントを実行します。
 
@@ -51,7 +49,6 @@ kintone では画面の移動等でイベントが実行されますが、ロー
 kintone.events.on('app.record.index.show', (event) => {
   console.log('event done');
 });
-
 kintone.events.do('app.record.index.show');
 
 => event done
@@ -72,100 +69,51 @@ kintone.events.do('app.record.detail.show', { recordId: '2' });
 
 ### テストデータの利用
 
-kintuba を`require`しただけではデータが存在しない為、`event.records`などにアクセスしても空配列が返ってしまいます。テスト用のデータを取得できるようにする為には、以下の手順で予めテストデータを準備する必要があります。尚、以下の手順では`kintone REST API`を利用して対象アプリの情報を取得します。
+kintuba を`require`しただけではデータが存在しない為、event.records などにアクセスしても空配列が返ります。テストデータを返すようにするには、テストデータを用意し以下の手順で都度読み込んでください。また、テストデータの作成は[ここ](https://github.com/t-kojima/kintuba/blob/master/docs/Commands.md)を参考に行ってください。
 
-#### kintone REST API 認証ファイルの作成
+#### schema
 
-`kintuba init`コマンドで認証用テンプレートを作成します。
+`kintone.schema.load()` を実行すると、`.kintuba/schema` ディレクトリにある以下のファイルを読み込みます。
 
-```bash
-npx kintuba init
-```
+* app.json
+* fields.json
+* form.json
+* views.json
 
-or
-
-```bash
-yarn kintuba init
-```
-
-カレントディレクトリに`.kintuba.json`が作成されるので、各パラメータを設定します。
-
-```json
-{
-  "domain": "<subdomain>.cybozu.com",
-  "app": "<app id>",
-  "username": "<username>",
-  "password": "<password>"
-}
-```
-
-#### 対象アプリ情報の取得
-
-作成した認証用ファイルを使用し、kintone REST API からアプリ情報を取得します。
-
-```bash
-npx kintuba fetch
-```
-
-or
-
-```bash
-yarn kintuba fetch
-```
-
-`.kintuba`ディレクトリが作成され、以下のファイルが生成されます。
-
-* schema
-  * app.json
-  * fields.json
-  * views.json
-  * form.json
-* fixture
-  * login.json
-  * records.json
-
-`schema`ディレクトリは kintuba が利用するアプリの設定情報のファイルが生成されます。
-
-`fixture`ディレクトリはテストデータ入力用のテンプレートが生成されます。
-
-#### テストデータの入力
-
-`fixture`ディレクトリのテンプレートへテストデータを登録します。
-
-以下は`records.json`の登録例です。`value`にデータを入力します。
-
-```json
-[
-  {
-    "$id": {
-      "type": "__ID__",
-      "value": "1"
-    },
-    "$revision": {
-      "type": "__REVISION__",
-      "value": "1"
-    },
-    "文字列__1行_": {
-      "type": "SINGLE_LINE_TEXT",
-      "value": "テストデータ"
-    },
-    "数値": {
-      "type": "NUMBER",
-      "value": "99"
-    }
-  }
-]
-```
-
-以上、`fixture`ディレクトリのファイルにテストデータを登録することで、kintubaのテストデータが利用できます。
+使用例）
 
 ```js
-kintone.events.on('app.record.index.show', (event) => {
-    console.log(event.records[0]["文字列__1行_"].value);
+describe('example', () => {
+  before(() => kintone.schema.load());
 });
-
-=> 'テストデータ'
 ```
+
+既定のディレクトリ（`.kintuba/schema`）以外にあるファイルを読みたい場合は引数で指定することができます。
+
+```js
+kintone.schema.load('other/dir');
+// other/dir/app.json 等がロードされる
+```
+
+#### fixture
+
+`kintone.fixture.load()`を実行すると、`.kintuba/fixture`ディレクトリにある以下のファイルを読み込みます。
+
+* login.json
+* records.json
+
+また、既定のディレクトリ以外を読む場合は引数で指定します。
+
+```js
+kintone.fixture.load('other/dir');
+// other/dir/login.json等がロードされる
+```
+
+## examples
+
+具体的な使用例はこちらのリポジトリを参照下さい。
+
+[https://github.com/t-kojima/kintuba-example](https://github.com/t-kojima/kintuba-example)
 
 ## Licence
 

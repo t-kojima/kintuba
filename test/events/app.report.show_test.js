@@ -1,12 +1,11 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
-const fixture = require('../../lib/fixture');
 
 const { assert } = require('chai');
 
 describe('app.report.show', () => {
   const method = 'app.report.show';
-  beforeEach(() => fixture.load());
+  beforeEach(() => kintone.fixture.load());
   afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {

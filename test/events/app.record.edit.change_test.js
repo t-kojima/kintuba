@@ -1,6 +1,5 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
-const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -13,7 +12,7 @@ const getActual = async (id) => {
 
 describe('app.record.edit.change.<フィールド>', () => {
   const method = 'app.record.edit.change.数値';
-  beforeEach(() => fixture.load());
+  beforeEach(() => kintone.fixture.load());
   afterEach(() => kintone.events.off(method));
 
   describe('returnしない場合', () => {

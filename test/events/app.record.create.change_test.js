@@ -1,6 +1,5 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../lib');
-const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -13,7 +12,7 @@ const getActual = async (id) => {
 
 describe('app.record.create.change.<フィールド>', () => {
   const method = 'app.record.create.change.数値';
-  beforeEach(() => fixture.load());
+  beforeEach(() => kintone.fixture.load());
   afterEach(() => kintone.events.off(method));
 
   describe('テーブルに行を追加した場合', () => {

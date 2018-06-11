@@ -1,7 +1,5 @@
 /* eslint-disable no-undef */
 require('../../lib');
-const schema = require('../../lib/schema');
-const fixture = require('../../lib/fixture');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -12,8 +10,8 @@ const getActual = async (id) => {
   return event.record;
 };
 
-schema.load();
-fixture.load();
+kintone.schema.load();
+kintone.fixture.load();
 
 describe('record GET', () => {
   it('レコードが取得できること（コールバック）', async () => {
@@ -172,8 +170,8 @@ describe('record GET', () => {
 
 describe('record POST', () => {
   afterEach(() => {
-    schema.load();
-    fixture.load();
+    kintone.schema.load();
+    kintone.fixture.load();
   });
 
   it('レコードが登録できること（コールバック）', async () => {
