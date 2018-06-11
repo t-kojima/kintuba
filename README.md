@@ -7,9 +7,19 @@ kintuba is stub for a unittest, it can use the kintone global object.
 
 ## Description
 
-kintuba は`node.js`上で動作する**kintone**オブジェクトのスタブです。kintone カスタマイズの JavaScript をローカル開発環境でテストする際に使用できます。
+kintuba は`node.js`上で動作する **kintone** オブジェクトのスタブモジュールです。kintone カスタマイズの JavaScript をローカル開発環境でテストする際に使用できます。
 
-karma でブラウザを使用したテストをする場合は、karma プラグインを併せて利用して下さい。
+---
+
+通常 kintone カスタマイズの JavaScript をテストしようとすると、kintone オブジェクトにアクセスできない為以下のエラーが発生します。
+
+```js
+ReferenceError: kintone is not defined
+```
+
+kintuba を使用すると、kintone オブジェクトのような振る舞いをしたり、予め用意したテストデータを kintone のデータのように扱ったりすることができます。
+
+また、karma でブラウザを使用したテストをする場合は、karma プラグインを併せて利用して下さい。
 
 [https://github.com/t-kojima/karma-kintuba](https://github.com/t-kojima/karma-kintuba)
 
@@ -46,26 +56,26 @@ kintone では画面の移動等でイベントが実行されますが、ロー
 `kintone.events.on`でイベントを登録するのに対し、`kintone.events.do`でイベントを実行します。
 
 ```js
-kintone.events.on('app.record.index.show', (event) => {
+kintone.events.on('app.record.index.show', event => {
   console.log('event done');
 });
 kintone.events.do('app.record.index.show');
 
-=> event done
+// => event done
 ```
 
 また、レコード詳細画面を開いた場合など、特定の状況を表現する場合は`option`を指定します。
 
 ```js
-kintone.events.on('app.record.detail.show', (event) => {
+kintone.events.on('app.record.detail.show', event => {
   console.log(event.record.$id.value);
 });
 kintone.events.do('app.record.detail.show', { recordId: '2' });
 
-=> 2
+// => 2
 ```
 
-尚、`kintone.events.do`は非同期で動作する点注意して下さい。
+尚、`kintone.events.do`は非同期で動作する点に注意して下さい。
 
 ### テストデータの利用
 
@@ -108,12 +118,6 @@ kintone.schema.load('other/dir');
 kintone.fixture.load('other/dir');
 // other/dir/login.json等がロードされる
 ```
-
-## examples
-
-具体的な使用例はこちらのリポジトリを参照下さい。
-
-[https://github.com/t-kojima/kintuba-example](https://github.com/t-kojima/kintuba-example)
 
 ## Licence
 
