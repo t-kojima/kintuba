@@ -142,7 +142,7 @@ module.exports = class RecordApi {
   }
 };
 
-},{"./../fixture":16,"./../schema":18}],3:[function(require,module,exports){
+},{"./../fixture":16,"./../schema":19}],3:[function(require,module,exports){
 
 
 /* eslint-disable no-undef, class-methods-use-this, no-unused-vars */
@@ -246,7 +246,7 @@ module.exports = class App {
   }
 };
 
-},{"./../app/record":4,"./../fixture":16,"./../schema":18}],4:[function(require,module,exports){
+},{"./../app/record":4,"./../fixture":16,"./../schema":19}],4:[function(require,module,exports){
 
 
 /* eslint-disable no-undef, class-methods-use-this, no-unused-vars */
@@ -332,7 +332,7 @@ module.exports = class Record {
   }
 };
 
-},{"./../schema":18}],5:[function(require,module,exports){
+},{"./../schema":19}],5:[function(require,module,exports){
 
 
 const schema = require('./../schema');
@@ -344,8 +344,10 @@ module.exports = class EventObject {
   }
 };
 
-},{"./../schema":18}],6:[function(require,module,exports){
+},{"./../schema":19}],6:[function(require,module,exports){
 
+
+/* eslint-disable no-eval, no-console */
 
 const { EventEmitter } = require('events');
 
@@ -420,7 +422,6 @@ const appendFieldChangeEvent = (event) => {
   const { type } = schema.fields.properties[key];
   if (!RecordChangeEventObject.TYPES.some(t => t === type)) return;
 
-  // eslint-disable-next-line no-eval
   eval(`${match[1]}`)[key] = (ev, options) =>
     // match[2]=editの場合のみ、トリガの変更がキャンセルされる可能性がある
     new RecordChangeEventObject(ev, options, type, match[2] !== 'edit');
@@ -431,9 +432,7 @@ const removeFieldChangeEvent = (event) => {
     const match = event.match(/^(app\.record\.(index\.edit|edit|create)\.change)\.([^.]+)$/);
     if (!match) return;
     const key = match[3];
-    // eslint-disable-next-line no-eval
     if (typeof eval(`${event}`) === 'function') {
-      // eslint-disable-next-line no-eval
       eval(`${match[1]}`)[key] = {};
     }
   } else {
@@ -447,14 +446,11 @@ const validate = (event) => {
   if (
     !event.match(/^app\.(record|report)(\.(index|detail))?(\.(create|edit|delete|print))?(\.(show|change|submit|process))?(\.(success|proceed))?(\..+)?$/)
   ) {
-    // eslint-disable-next-line no-console
     console.warn(`\nno match event : ${event}`);
     return false;
   }
 
-  // eslint-disable-next-line no-eval
   if (typeof eval(`${event}`) !== 'function') {
-    // eslint-disable-next-line no-console
     console.warn(`\nmissing event : ${event}`);
     return false;
   }
@@ -474,7 +470,6 @@ module.exports = class Event extends EventEmitter {
     appendFieldChangeEvent(event);
     if (!validate(event)) return null;
 
-    // eslint-disable-next-line no-eval
     const eventObj = eval(`${event}`)(event, options);
     // kintone.appへ変更を通知
     await this.emit('event.do', event, options);
@@ -498,7 +493,7 @@ module.exports = class Event extends EventEmitter {
   }
 };
 
-},{"../schema":18,"./record_change_event_object":7,"./record_delete_event_object":8,"./record_edit_event_object":9,"./record_edit_submit_event_object":10,"./record_edit_submit_success_event_object":11,"./record_event_object":12,"./record_process_event_object":13,"./records_event_object":14,"./report_event_object":15,"events":20}],7:[function(require,module,exports){
+},{"../schema":19,"./record_change_event_object":7,"./record_delete_event_object":8,"./record_edit_event_object":9,"./record_edit_submit_event_object":10,"./record_edit_submit_success_event_object":11,"./record_event_object":12,"./record_process_event_object":13,"./records_event_object":14,"./report_event_object":15,"events":21}],7:[function(require,module,exports){
 
 
 // record.index.edit.change.<field>
@@ -718,7 +713,7 @@ module.exports = class RecordEventObject extends EventObject {
   }
 };
 
-},{"./../fixture":16,"./../schema":18,"./event_object":5}],13:[function(require,module,exports){
+},{"./../fixture":16,"./../schema":19,"./event_object":5}],13:[function(require,module,exports){
 
 
 const fixture = require('./../fixture');
@@ -825,7 +820,7 @@ module.exports = class RecordsEventObject extends EventObject {
   }
 };
 
-},{"./../fixture":16,"./../schema":18,"./event_object":5}],15:[function(require,module,exports){
+},{"./../fixture":16,"./../schema":19,"./event_object":5}],15:[function(require,module,exports){
 
 
 // app.report.show
@@ -913,7 +908,7 @@ exports.delete = (id) => {
   this.records = this.records.filter(r => r.$id.value !== id);
 };
 
-},{"fs":19}],17:[function(require,module,exports){
+},{"fs":20}],17:[function(require,module,exports){
 (function (global){
 
 
@@ -922,6 +917,7 @@ exports.delete = (id) => {
 const App = require('./app');
 const Api = require('./api');
 const Record = require('./app/record');
+const Plugin = require('./plugin');
 const Event = require('./event');
 const schema = require('./schema');
 const fixture = require('./fixture');
@@ -938,6 +934,7 @@ class Kintuba {
   constructor() {
     this.app = new App();
     this.api = Api;
+    this.plugin = Plugin;
     this.events = new Event();
     this.Promise = Promise;
 
@@ -1003,7 +1000,27 @@ class Kintuba {
 global.kintone = new Kintuba();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./api":1,"./app":3,"./app/record":4,"./event":6,"./fixture":16,"./schema":18}],18:[function(require,module,exports){
+},{"./api":1,"./app":3,"./app/record":4,"./event":6,"./fixture":16,"./plugin":18,"./schema":19}],18:[function(require,module,exports){
+
+
+const plugin = {
+  app: {
+    getConfig: () => null,
+    setConfig: (config, callback) => {
+      if (callback) callback();
+    },
+    getProxyConfig: () => null,
+    setProxyConfig: (url, method, headers, data, callback) => {
+      if (callback) callback();
+    },
+    proxy() {},
+    upload() {},
+  },
+};
+
+module.exports = plugin;
+
+},{}],19:[function(require,module,exports){
 
 
 const fs = require('fs');
@@ -1034,9 +1051,9 @@ exports.load = (dirname = DIR_SCHEMA) => {
   this.form = loadFile(`${dirname}/form.json`, {});
 };
 
-},{"fs":19}],19:[function(require,module,exports){
+},{"fs":20}],20:[function(require,module,exports){
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1467,24 +1484,28 @@ EventEmitter.prototype.removeAllListeners =
       return this;
     };
 
-EventEmitter.prototype.listeners = function listeners(type) {
-  var evlistener;
-  var ret;
-  var events = this._events;
+function _listeners(target, type, unwrap) {
+  var events = target._events;
 
   if (!events)
-    ret = [];
-  else {
-    evlistener = events[type];
-    if (!evlistener)
-      ret = [];
-    else if (typeof evlistener === 'function')
-      ret = [evlistener.listener || evlistener];
-    else
-      ret = unwrapListeners(evlistener);
-  }
+    return [];
 
-  return ret;
+  var evlistener = events[type];
+  if (!evlistener)
+    return [];
+
+  if (typeof evlistener === 'function')
+    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
+
+  return unwrap ? unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
+}
+
+EventEmitter.prototype.listeners = function listeners(type) {
+  return _listeners(this, type, true);
+};
+
+EventEmitter.prototype.rawListeners = function rawListeners(type) {
+  return _listeners(this, type, false);
 };
 
 EventEmitter.listenerCount = function(emitter, type) {

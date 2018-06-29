@@ -7,6 +7,8 @@ docs/
 
 .gitignore
 .travis.yml
+.eslintignore
+.eslintrc.js
 
 *.log
 *.lock
