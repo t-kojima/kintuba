@@ -2,8 +2,6 @@
 require('../../lib');
 const { assert } = require('chai');
 
-kintone.schema.load();
-
 describe('getConfig', () => {
   it('nullが返ること', async () => {
     const actual = kintone.plugin.app.getConfig('pluginId');
@@ -55,7 +53,7 @@ describe('setProxyConfig', () => {
 
 describe('upload', () => {
   it('何も実行されないこと', async () => {
-    const result = kintone.plugin.app.proxy(
+    const result = kintone.plugin.app.proxy.upload(
       'pluginId',
       'http://example.com',
       'GET',

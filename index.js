@@ -142,7 +142,7 @@ module.exports = class RecordApi {
   }
 };
 
-},{"./../fixture":16,"./../schema":19}],3:[function(require,module,exports){
+},{"./../fixture":16,"./../schema":20}],3:[function(require,module,exports){
 
 
 /* eslint-disable no-undef, class-methods-use-this, no-unused-vars */
@@ -246,7 +246,7 @@ module.exports = class App {
   }
 };
 
-},{"./../app/record":4,"./../fixture":16,"./../schema":19}],4:[function(require,module,exports){
+},{"./../app/record":4,"./../fixture":16,"./../schema":20}],4:[function(require,module,exports){
 
 
 /* eslint-disable no-undef, class-methods-use-this, no-unused-vars */
@@ -332,7 +332,7 @@ module.exports = class Record {
   }
 };
 
-},{"./../schema":19}],5:[function(require,module,exports){
+},{"./../schema":20}],5:[function(require,module,exports){
 
 
 const schema = require('./../schema');
@@ -344,7 +344,7 @@ module.exports = class EventObject {
   }
 };
 
-},{"./../schema":19}],6:[function(require,module,exports){
+},{"./../schema":20}],6:[function(require,module,exports){
 
 
 /* eslint-disable no-eval, no-console */
@@ -493,7 +493,7 @@ module.exports = class Event extends EventEmitter {
   }
 };
 
-},{"../schema":19,"./record_change_event_object":7,"./record_delete_event_object":8,"./record_edit_event_object":9,"./record_edit_submit_event_object":10,"./record_edit_submit_success_event_object":11,"./record_event_object":12,"./record_process_event_object":13,"./records_event_object":14,"./report_event_object":15,"events":21}],7:[function(require,module,exports){
+},{"../schema":20,"./record_change_event_object":7,"./record_delete_event_object":8,"./record_edit_event_object":9,"./record_edit_submit_event_object":10,"./record_edit_submit_success_event_object":11,"./record_event_object":12,"./record_process_event_object":13,"./records_event_object":14,"./report_event_object":15,"events":22}],7:[function(require,module,exports){
 
 
 // record.index.edit.change.<field>
@@ -713,7 +713,7 @@ module.exports = class RecordEventObject extends EventObject {
   }
 };
 
-},{"./../fixture":16,"./../schema":19,"./event_object":5}],13:[function(require,module,exports){
+},{"./../fixture":16,"./../schema":20,"./event_object":5}],13:[function(require,module,exports){
 
 
 const fixture = require('./../fixture');
@@ -820,7 +820,7 @@ module.exports = class RecordsEventObject extends EventObject {
   }
 };
 
-},{"./../fixture":16,"./../schema":19,"./event_object":5}],15:[function(require,module,exports){
+},{"./../fixture":16,"./../schema":20,"./event_object":5}],15:[function(require,module,exports){
 
 
 // app.report.show
@@ -908,7 +908,7 @@ exports.delete = (id) => {
   this.records = this.records.filter(r => r.$id.value !== id);
 };
 
-},{"fs":20}],17:[function(require,module,exports){
+},{"fs":21}],17:[function(require,module,exports){
 (function (global){
 
 
@@ -918,6 +918,7 @@ const App = require('./app');
 const Api = require('./api');
 const Record = require('./app/record');
 const Plugin = require('./plugin');
+const Proxy = require('./proxy');
 const Event = require('./event');
 const schema = require('./schema');
 const fixture = require('./fixture');
@@ -935,6 +936,7 @@ class Kintuba {
     this.app = new App();
     this.api = Api;
     this.plugin = Plugin;
+    this.proxy = Proxy;
     this.events = new Event();
     this.Promise = Promise;
 
@@ -1000,7 +1002,7 @@ class Kintuba {
 global.kintone = new Kintuba();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./api":1,"./app":3,"./app/record":4,"./event":6,"./fixture":16,"./plugin":18,"./schema":19}],18:[function(require,module,exports){
+},{"./api":1,"./app":3,"./app/record":4,"./event":6,"./fixture":16,"./plugin":18,"./proxy":19,"./schema":20}],18:[function(require,module,exports){
 
 
 const plugin = {
@@ -1014,13 +1016,22 @@ const plugin = {
       if (callback) callback();
     },
     proxy() {},
-    upload() {},
   },
 };
+
+plugin.app.proxy.upload = () => {};
 
 module.exports = plugin;
 
 },{}],19:[function(require,module,exports){
+
+
+const proxy = () => {};
+proxy.upload = () => {};
+
+module.exports = proxy;
+
+},{}],20:[function(require,module,exports){
 
 
 const fs = require('fs');
@@ -1051,9 +1062,9 @@ exports.load = (dirname = DIR_SCHEMA) => {
   this.form = loadFile(`${dirname}/form.json`, {});
 };
 
-},{"fs":20}],20:[function(require,module,exports){
+},{"fs":21}],21:[function(require,module,exports){
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a

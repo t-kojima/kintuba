@@ -47,7 +47,7 @@ opt_detectGuestSpace が true の場合、`https://dummy.cybozu.com/k/guest/1/v1
 ## getConcurrencyLimit
 
 ```js
-kintone.api.getConcurrencyLimit;
+kintone.api.getConcurrencyLimit();
 ```
 
 - 非同期関数です。
