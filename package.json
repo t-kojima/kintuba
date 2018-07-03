@@ -1,6 +1,6 @@
 {
   "name": "kintuba",
-  "version": "0.9.3",
+  "version": "0.9.5",
   "description": "kintuba is stub for a unittest, it can use the kintone global object.",
   "main": "index.js",
   "repository": "git@github.com:t-kojima/kintuba.git",
@@ -22,16 +22,9 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.8.2",
     "mocha": "^5.2.0",
+    "pre-commit": "^1.2.2",
     "prettier": "^1.12.1"
-  },
-  "eslintConfig": {
-    "extends": "airbnb",
-    "plugins": [
-      "import"
-    ]
   },
   "dependencies": {
     "cac": "^5.0.10",
@@ -42,6 +35,10 @@
     "kintuba": "./bin/kintuba"
   },
   "scripts": {
-    "test": "mocha --recursive test"
-  }
+    "test": "mocha --recursive test",
+    "build": "browserify lib/index.js -o index.js && git add index.js"
+  },
+  "pre-commit": [
+    "build"
+  ]
 }

@@ -17,6 +17,7 @@ kintone.api(pathOrUrl, method, params, opt_callback, opt_errback);
 | ------------ | ------ | ------------------ |
 | /k/v1/record | GET    | 指定レコードの取得 |
 | /k/v1/record | POST   | 新規レコードの登録 |
+| /k/v1/record | PUT    | 指定レコードの更新 |
 
 ## kintone.api.url
 
@@ -47,7 +48,7 @@ opt_detectGuestSpace が true の場合、`https://dummy.cybozu.com/k/guest/1/v1
 ## getConcurrencyLimit
 
 ```js
-kintone.api.getConcurrencyLimit;
+kintone.api.getConcurrencyLimit();
 ```
 
 - 非同期関数です。

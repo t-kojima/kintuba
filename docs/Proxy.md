@@ -4,8 +4,16 @@ kintone.proxy が持つ関数について、kintuba での挙動を説明しま�
 
 ## kintone.proxy
 
-この関数は実装されていません。
+```js
+kintone.proxy(url, method, headers, data, callback, errback);
+```
+
+- この関数は何も実行しません。
 
 ## kintone.proxy.upload
 
-この関数は実装されていません。
+```js
+kintone.proxy.upload(url, method, headers, data, callback, errback);
+```
+
+- この関数は何も実行しません。

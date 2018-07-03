@@ -10,10 +10,12 @@ const getActual = async (id) => {
   return event.record;
 };
 
-kintone.schema.load();
-kintone.fixture.load();
-
 describe('record GET', () => {
+  beforeEach(() => {
+    kintone.schema.load();
+    kintone.fixture.load();
+  });
+
   it('レコードが取得できること（コールバック）', async () => {
     let actual;
     await kintone.api(
@@ -169,7 +171,7 @@ describe('record GET', () => {
 });
 
 describe('record POST', () => {
-  afterEach(() => {
+  beforeEach(() => {
     kintone.schema.load();
     kintone.fixture.load();
   });
@@ -297,6 +299,304 @@ describe('record POST', () => {
           actual = reject.message;
         },
       );
+      assert.equal(actual, 'Invalid params');
+    });
+  });
+});
+
+describe('record PUT', () => {
+  beforeEach(() => {
+    kintone.schema.load();
+    kintone.fixture.load();
+  });
+
+  describe('id指定', () => {
+    describe('リビジョン指定無し', () => {
+      it('レコードが更新できること', async () => {
+        let actual;
+        await kintone.api(
+          '/k/v1/record',
+          'PUT',
+          {
+            app: 2,
+            id: 1,
+            record: {
+              数値: {
+                value: '999',
+              },
+            },
+          },
+          (resp) => {
+            actual = resp;
+          },
+          (err) => {
+            actual = err.message;
+          },
+        );
+        assert.deepEqual(actual, {
+          revision: '2',
+        });
+        const target = await getActual(1);
+        assert.equal(target.数値.value, '999');
+      });
+
+      describe('レコード指定なし', () => {
+        it('レコードが更新されないこと', async () => {
+          let actual;
+          await kintone.api(
+            '/k/v1/record',
+            'PUT',
+            {
+              app: 2,
+              id: 1,
+            },
+            (resp) => {
+              actual = resp;
+            },
+            (err) => {
+              actual = err.message;
+            },
+          );
+          assert.deepEqual(actual, {
+            revision: '1',
+          });
+          const target = await getActual(1);
+          assert.equal(target.数値.value, '99');
+        });
+      });
+    });
+
+    describe('リビジョン指定有り', () => {
+      it('レコードが更新できること', async () => {
+        let actual;
+        await kintone.api(
+          '/k/v1/record',
+          'PUT',
+          {
+            app: 2,
+            id: 1,
+            record: {
+              数値: {
+                value: '999',
+              },
+            },
+            revision: 1,
+          },
+          (resp) => {
+            actual = resp;
+          },
+          (err) => {
+            actual = err.message;
+          },
+        );
+        assert.deepEqual(actual, {
+          revision: '2',
+        });
+        const target = await getActual(1);
+        assert.equal(target.数値.value, '999');
+      });
+
+      it('レコードが更新できること（-1）', async () => {
+        let actual;
+        await kintone.api(
+          '/k/v1/record',
+          'PUT',
+          {
+            app: 2,
+            id: 1,
+            record: {
+              数値: {
+                value: '999',
+              },
+            },
+            revision: -1,
+          },
+          (resp) => {
+            actual = resp;
+          },
+          (err) => {
+            actual = err.message;
+          },
+        );
+        assert.deepEqual(actual, {
+          revision: '2',
+        });
+        const target = await getActual(1);
+        assert.equal(target.数値.value, '999');
+      });
+
+      describe('リビジョンが異なる場合', () => {
+        it('エラーになること', async () => {
+          let actual;
+          await kintone.api(
+            '/k/v1/record',
+            'PUT',
+            {
+              app: 2,
+              id: 1,
+              record: {
+                数値: {
+                  value: '999',
+                },
+              },
+              revision: 9,
+            },
+            (resp) => {
+              actual = resp;
+            },
+            (err) => {
+              actual = err.message;
+            },
+          );
+          assert.equal(actual, 'Invalid params');
+        });
+      });
+    });
+  });
+
+  describe('updateKey指定', () => {
+    describe('重複禁止フィールドであること', () => {
+      beforeEach(() => kintone.schema.load('.kintuba/schema2'));
+
+      it('レコードが更新できること', async () => {
+        let actual;
+        await kintone
+          .api('/k/v1/record', 'PUT', {
+            app: 2,
+            updateKey: {
+              field: '数値',
+              value: '99',
+            },
+            record: {
+              数値: {
+                value: '999',
+              },
+            },
+          })
+          .then(
+            (resolve) => {
+              actual = resolve;
+            },
+            (reject) => {
+              actual = reject.message;
+            },
+          );
+        assert.deepEqual(actual, {
+          revision: '2',
+        });
+      });
+    });
+
+    describe('重複禁止フィールドではないこと', () => {
+      it('エラーになること', async () => {
+        let actual;
+        await kintone
+          .api('/k/v1/record', 'PUT', {
+            app: 2,
+            updateKey: {
+              field: '数値',
+              value: '99',
+            },
+            record: {
+              数値: {
+                value: '999',
+              },
+            },
+          })
+          .then(
+            (resolve) => {
+              actual = resolve;
+            },
+            (reject) => {
+              actual = reject.message;
+            },
+          );
+        assert.equal(actual, 'Invalid params');
+      });
+    });
+
+    describe('文字列（1行）と数値以外を指定した場合', () => {
+      it('エラーになること', async () => {
+        let actual;
+        await kintone
+          .api('/k/v1/record', 'PUT', {
+            app: 2,
+            updateKey: {
+              field: '複数選択',
+              value: 'DUMMY',
+            },
+            record: {
+              複数選択: {
+                value: 'DUMMY2',
+              },
+            },
+          })
+          .then(
+            (resolve) => {
+              actual = resolve;
+            },
+            (reject) => {
+              actual = reject.message;
+            },
+          );
+        assert.equal(actual, 'Invalid params');
+      });
+    });
+
+    describe('存在しないフィールドの場合', () => {
+      it('エラーになること', async () => {
+        let actual;
+        await kintone
+          .api('/k/v1/record', 'PUT', {
+            app: 2,
+            updateKey: {
+              field: '数値2',
+              value: '99',
+            },
+            record: {
+              数値2: {
+                value: '999',
+              },
+            },
+          })
+          .then(
+            (resolve) => {
+              actual = resolve;
+            },
+            (reject) => {
+              actual = reject.message;
+            },
+          );
+        assert.equal(actual, 'Invalid params');
+      });
+    });
+  });
+
+  describe('idとupdateKey両方指定', () => {
+    it('エラーになること', async () => {
+      let actual;
+      await kintone
+        .api('/k/v1/record', 'PUT', {
+          app: 2,
+          id: 1,
+          updateKey: {
+            field: '数値',
+            value: '99',
+          },
+          record: {
+            数値: {
+              value: '999',
+            },
+          },
+        })
+        .then(
+          (resolve) => {
+            actual = resolve;
+          },
+          (reject) => {
+            actual = reject.message;
+          },
+        );
       assert.equal(actual, 'Invalid params');
     });
   });
