@@ -1,6 +1,6 @@
 {
   "name": "kintuba",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "kintuba is stub for a unittest, it can use the kintone global object.",
   "main": "index.js",
   "repository": "git@github.com:t-kojima/kintuba.git",
