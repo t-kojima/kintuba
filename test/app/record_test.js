@@ -1,5 +1,5 @@
-/* eslint-disable no-undef */
-require('../../lib');
+/* eslint-disable no-undef, no-unused-vars */
+require('../../.');
 const { assert } = require('chai');
 const should = require('chai').should();
 

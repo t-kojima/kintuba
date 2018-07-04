@@ -1,6 +1,5 @@
 /* eslint-disable no-undef, no-param-reassign */
-require('../../lib');
-const { assert } = require('chai');
+require('../../.');
 
 describe('app.record.create.submit', () => {
   const method = 'app.record.create.submit';

@@ -9,6 +9,7 @@ docs/
 .travis.yml
 .eslintignore
 .eslintrc.js
+webpack.config.js
 
 *.log
 *.lock

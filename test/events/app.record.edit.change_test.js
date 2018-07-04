@@ -1,5 +1,5 @@
 /* eslint-disable no-undef, no-param-reassign */
-require('../../lib');
+require('../../.');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
