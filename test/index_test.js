@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
 require('../.');
+require('../fixture').load();
+require('../schema').load();
 const { assert } = require('chai');
-
-kintone.schema.load();
-kintone.fixture.load();
 
 describe('kintone関数', () => {
   it('UI Versionが2であること', () => {
