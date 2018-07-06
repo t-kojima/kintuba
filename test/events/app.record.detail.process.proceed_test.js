@@ -1,5 +1,7 @@
 /* eslint-disable no-undef, no-param-reassign */
-require('../../lib');
+require('../../.');
+const fixture = require('../../fixture');
+const schema = require('../../schema');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -12,7 +14,7 @@ const getActual = async (id) => {
 
 describe('app.record.detail.process.proceed', () => {
   const method = 'app.record.detail.process.proceed';
-  beforeEach(() => kintone.fixture.load());
+  beforeEach(() => fixture.load());
   afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
@@ -257,12 +259,12 @@ describe('app.record.detail.process.proceed', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     it('存在しないidを指定した場合、undefinedが取得されること', async () => {

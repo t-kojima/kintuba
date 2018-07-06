@@ -1,9 +1,8 @@
-/* eslint-disable no-undef */
-require('../../lib');
+/* eslint-disable no-undef, no-unused-vars */
+require('../../.');
+const fixture = require('../../fixture');
+const schema = require('../../schema');
 const { assert } = require('chai');
-const should = require('chai').should();
-
-kintone.schema.load();
 
 describe('getId', () => {
   it('schemaのappIdが返ること', async () => {
@@ -13,12 +12,12 @@ describe('getId', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     it('nullが返ること', async () => {
@@ -45,12 +44,12 @@ describe('getLookupTargetAppId', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     it('nullが返ること', async () => {
@@ -77,12 +76,12 @@ describe('getRelatedRecordsTargetAppId', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     it('nullが返ること', async () => {
@@ -141,15 +140,15 @@ describe('getFieldElements', () => {
 
     describe('レコードが0件の場合', () => {
       before(async () => {
-        kintone.fixture.load('.kintuba/fixture2');
+        fixture.load('.kintuba/fixture2');
         const del = 'app.record.index.delete.submit';
         kintone.events.on(del, event => event);
         await kintone.events.do(del, { recordId: '1' });
         kintone.events.off(del);
       });
       after(() => {
-        kintone.schema.load();
-        kintone.fixture.load();
+        schema.load();
+        fixture.load();
       });
 
       it('空配列が返ること', async () => {
@@ -174,12 +173,12 @@ describe('getFieldElements', () => {
   describe('.kintubaディレクトリが無い場合', () => {
     const method = 'app.record.index.show';
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     it('nullが返ること', async () => {

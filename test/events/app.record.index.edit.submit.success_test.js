@@ -1,5 +1,7 @@
 /* eslint-disable no-undef, no-param-reassign */
-require('../../lib');
+require('../../.');
+const fixture = require('../../fixture');
+const schema = require('../../schema');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -12,7 +14,7 @@ const getActual = async (id) => {
 
 describe('app.record.index.edit.submit.success', () => {
   const method = 'app.record.index.edit.submit.success';
-  beforeEach(() => kintone.fixture.load());
+  beforeEach(() => fixture.load());
   afterEach(() => kintone.events.off(method));
 
   it('イベントが発火すること', async () => {
@@ -58,12 +60,12 @@ describe('app.record.index.edit.submit.success', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     it('イベントが発火すること', async () => {

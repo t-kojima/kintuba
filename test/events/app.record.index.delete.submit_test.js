@@ -1,5 +1,7 @@
 /* eslint-disable no-undef, no-param-reassign */
-require('../../lib');
+require('../../.');
+const fixture = require('../../fixture');
+const schema = require('../../schema');
 const { assert } = require('chai');
 
 const getSize = async () => {
@@ -12,9 +14,9 @@ const getSize = async () => {
 
 describe('app.record.index.delete.submit', () => {
   const method = 'app.record.index.delete.submit';
-  before(() => kintone.fixture.load());
+  before(() => fixture.load());
   afterEach(() => kintone.events.off(method));
-  after(() => kintone.fixture.load());
+  after(() => fixture.load());
 
   describe('return event;', () => {
     it('レコードが削除されること', async () => {
@@ -31,7 +33,7 @@ describe('app.record.index.delete.submit', () => {
     });
 
     it('削除結果がリセットされること', async () => {
-      kintone.fixture.load();
+      fixture.load();
       const size = await getSize();
       assert.equal(size, 3);
     });
@@ -52,12 +54,12 @@ describe('app.record.index.delete.submit', () => {
       kintone.events.on(method, event =>
         new kintone.Promise((resolve) => {
           // レコード0件
-          kintone.fixture.load('.');
+          fixture.load('.');
           resolve(getSize());
         }).then((response) => {
           if (response === 0) {
             // レコード101件
-            kintone.fixture.load('.kintuba/handred');
+            fixture.load('.kintuba/handred');
           }
           return event;
         }));
@@ -70,12 +72,12 @@ describe('app.record.index.delete.submit', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     describe('return event;', () => {
@@ -100,8 +102,8 @@ describe('app.record.index.delete.submit', () => {
   });
 
   describe('fixture2 を読み込んだ場合', () => {
-    before(() => kintone.fixture.load('.kintuba/fixture2'));
-    after(() => kintone.fixture.load());
+    before(() => fixture.load('.kintuba/fixture2'));
+    after(() => fixture.load());
 
     describe('return event;', () => {
       it('レコードが削除されること', async () => {

@@ -1,9 +1,8 @@
 /* eslint-disable no-undef, no-param-reassign */
-require('../../lib');
+require('../../.');
+const fixture = require('../../fixture');
+const schema = require('../../schema');
 const { assert } = require('chai');
-
-kintone.schema.load();
-kintone.fixture.load();
 
 const getActual = async (id) => {
   const method = 'app.record.index.edit.show';
@@ -15,6 +14,10 @@ const getActual = async (id) => {
 
 describe('app.record.index.show', () => {
   const method = 'app.record.index.show';
+  before(() => {
+    fixture.load();
+    schema.load();
+  });
   afterEach(() => kintone.events.off(method));
 
   it('テストデータが取得できること', async () => {
@@ -49,8 +52,8 @@ describe('app.record.index.show', () => {
   });
 
   describe('カレンダービュー', () => {
-    before(() => kintone.fixture.load('.kintuba/calendar'));
-    after(() => kintone.fixture.load());
+    before(() => fixture.load('.kintuba/calendar'));
+    after(() => fixture.load());
 
     /*
     テストデータ
@@ -97,12 +100,12 @@ describe('app.record.index.show', () => {
 
   describe('.kintubaディレクトリが無い場合', () => {
     before(() => {
-      kintone.schema.load('.');
-      kintone.fixture.load('.');
+      schema.load('.');
+      fixture.load('.');
     });
     after(() => {
-      kintone.schema.load();
-      kintone.fixture.load();
+      schema.load();
+      fixture.load();
     });
 
     it('レコード配列が空配列であること', async () => {
@@ -127,8 +130,8 @@ describe('app.record.index.show', () => {
   });
 
   describe('handred を読み込んだ場合', () => {
-    before(() => kintone.fixture.load('.kintuba/handred'));
-    after(() => kintone.fixture.load());
+    before(() => fixture.load('.kintuba/handred'));
+    after(() => fixture.load());
 
     it('取得件数が100であること', async () => {
       kintone.events.on(method, event => event);

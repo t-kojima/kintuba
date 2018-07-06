@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-require('../../lib');
+require('../../.');
 const { assert } = require('chai');
 
 describe('proxy', () => {

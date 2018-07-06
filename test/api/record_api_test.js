@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
-require('../../lib');
+require('../../.');
+const fixture = require('../../fixture');
+const schema = require('../../schema');
 const { assert } = require('chai');
 
 const getActual = async (id) => {
@@ -12,8 +14,8 @@ const getActual = async (id) => {
 
 describe('record GET', () => {
   beforeEach(() => {
-    kintone.schema.load();
-    kintone.fixture.load();
+    schema.load();
+    fixture.load();
   });
 
   it('レコードが取得できること（コールバック）', async () => {
@@ -172,8 +174,8 @@ describe('record GET', () => {
 
 describe('record POST', () => {
   beforeEach(() => {
-    kintone.schema.load();
-    kintone.fixture.load();
+    schema.load();
+    fixture.load();
   });
 
   it('レコードが登録できること（コールバック）', async () => {
@@ -306,8 +308,8 @@ describe('record POST', () => {
 
 describe('record PUT', () => {
   beforeEach(() => {
-    kintone.schema.load();
-    kintone.fixture.load();
+    schema.load();
+    fixture.load();
   });
 
   describe('id指定', () => {
@@ -456,7 +458,7 @@ describe('record PUT', () => {
 
   describe('updateKey指定', () => {
     describe('重複禁止フィールドであること', () => {
-      beforeEach(() => kintone.schema.load('.kintuba/schema2'));
+      beforeEach(() => schema.load('.kintuba/schema2'));
 
       it('レコードが更新できること', async () => {
         let actual;
