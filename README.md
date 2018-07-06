@@ -84,7 +84,7 @@ kintuba を`require`しただけではデータが存在しない為、event.rec
 
 #### schema
 
-`kintone.schema.load()` を実行すると、`.kintuba/schema` ディレクトリにある以下のファイルを読み込みます。
+`schema.load()` を実行すると、`.kintuba/schema` ディレクトリにある以下のファイルを読み込みます。
 
 * app.json
 * fields.json
@@ -94,29 +94,41 @@ kintuba を`require`しただけではデータが存在しない為、event.rec
 使用例）
 
 ```js
+const schema = require('kintone/schema');
+
 describe('example', () => {
-  before(() => kintone.schema.load());
+  before(() => schema.load());
 });
 ```
 
 既定のディレクトリ（`.kintuba/schema`）以外にあるファイルを読みたい場合は引数で指定することができます。
 
 ```js
-kintone.schema.load('other/dir');
+schema.load('other/dir');
 // other/dir/app.json 等がロードされる
 ```
 
 #### fixture
 
-`kintone.fixture.load()`を実行すると、`.kintuba/fixture`ディレクトリにある以下のファイルを読み込みます。
+`fixture.load()`を実行すると、`.kintuba/fixture`ディレクトリにある以下のファイルを読み込みます。
 
 * login.json
 * records.json
 
+使用例）
+
+```js
+const fixture = require('kintone/fixture');
+
+describe('example', () => {
+  before(() => fixture.load());
+});
+```
+
 また、既定のディレクトリ以外を読む場合は引数で指定します。
 
 ```js
-kintone.fixture.load('other/dir');
+fixture.load('other/dir');
 // other/dir/login.json等がロードされる
 ```
 
