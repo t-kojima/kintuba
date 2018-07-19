@@ -1,10 +1,10 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -24,7 +24,7 @@ describe('app.record.index.edit.submit.success', () => {
   });
 
   it('recordのフィールドを変更した時、反映されないこと', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.record.数値.value = '999';
       return event;
     });
@@ -47,12 +47,13 @@ describe('app.record.index.edit.submit.success', () => {
   describe('return kintone.Promise', () => {
     it('非同期処理を待ってイベントが走ること', async () => {
       kintone.events.on(method, event =>
-        new kintone.Promise((resolve) => {
+        new kintone.Promise(resolve => {
           resolve('TEST MESSAGE');
-        }).then((response) => {
+        }).then(response => {
           event.test = response;
           return event;
-        }));
+        })
+      );
       const event = await kintone.events.do(method, { recordId: '1' });
       assert.equal(event.test, 'TEST MESSAGE');
     });

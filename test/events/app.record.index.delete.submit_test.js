@@ -1,8 +1,8 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
 const getSize = async () => {
   const method = 'app.record.index.show';
@@ -52,17 +52,18 @@ describe('app.record.index.delete.submit', () => {
   describe('return kintone.Promise', () => {
     it('非同期処理を待ってイベントが走ること', async () => {
       kintone.events.on(method, event =>
-        new kintone.Promise((resolve) => {
+        new kintone.Promise(resolve => {
           // レコード0件
           fixture.load('.');
           resolve(getSize());
-        }).then((response) => {
+        }).then(response => {
           if (response === 0) {
             // レコード101件
             fixture.load('.kintuba/handred');
           }
           return event;
-        }));
+        })
+      );
       await kintone.events.do(method, { recordId: '1' });
 
       const size = await getSize();

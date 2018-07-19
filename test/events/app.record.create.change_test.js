@@ -1,9 +1,9 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
-const fixture = require('../../fixture');
 const { assert } = require('chai');
+const fixture = require('../../fixture');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -30,7 +30,7 @@ describe('app.record.create.change.<フィールド>', () => {
 
   describe('ルックアップの取得を自動で行う場合', () => {
     it('ルックアップ先に反映させない', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.ルックアップ.lookup = true;
         event.record.ルックアップ.value = 'テスト';
       });

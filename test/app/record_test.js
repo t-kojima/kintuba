@@ -1,9 +1,9 @@
 /* eslint-disable no-undef, no-unused-vars */
 require('../../.');
+const { assert } = require('chai');
+require('chai').should();
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
-const should = require('chai').should();
 
 describe('kintone.app.record', () => {
   before(() => fixture.load());
@@ -131,14 +131,16 @@ describe('kintone.app.record', () => {
         await kintone.events.do(method, { recordId: '1' });
         (() => kintone.app.record.getFieldElement('数値')).should.throw(
           ReferenceError,
-          'document is not defined',
+          'document is not defined'
         );
       });
 
       it('nullが返ること', async () => {
         kintone.events.on(method, event => event);
         await kintone.events.do(method, { recordId: '1' });
-        const actual = kintone.app.record.getFieldElement('存在しないフィールド');
+        const actual = kintone.app.record.getFieldElement(
+          '存在しないフィールド'
+        );
         assert.isNull(actual);
       });
     });
@@ -166,7 +168,7 @@ describe('kintone.app.record', () => {
         await kintone.events.do(method, { recordId: '1' });
         (() => kintone.app.record.getSpaceElement('sp')).should.throw(
           ReferenceError,
-          'document is not defined',
+          'document is not defined'
         );
       });
 

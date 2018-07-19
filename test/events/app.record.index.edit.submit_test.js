@@ -1,10 +1,10 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -24,7 +24,7 @@ describe('app.record.index.edit.submit', () => {
   });
 
   it('recordのフィールドを変更した時、反映されること', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.record.数値.value = '999';
       return event;
     });
@@ -35,7 +35,7 @@ describe('app.record.index.edit.submit', () => {
   });
 
   it('書き換えできないフィールドを変更した時、反映されないこと', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.record.文字列__1行__AUTO_CALC.value = '999';
       return event;
     });
@@ -47,7 +47,7 @@ describe('app.record.index.edit.submit', () => {
 
   describe('フィールドにエラーを表示する', () => {
     it('プロパティ上はエラーメッセージが設定される', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.error = 'ERROR MESSAGE';
         return event;
       });
@@ -62,7 +62,7 @@ describe('app.record.index.edit.submit', () => {
 
   describe('画面の上部にエラーを表示する', () => {
     it('エラーメッセージは保持されない', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.error = 'ERROR MESSAGE';
         return event;
       });
@@ -78,12 +78,13 @@ describe('app.record.index.edit.submit', () => {
   describe('return kintone.Promise', () => {
     it('非同期処理を待ってイベントが走ること', async () => {
       kintone.events.on(method, event =>
-        new kintone.Promise((resolve) => {
+        new kintone.Promise(resolve => {
           resolve('999');
-        }).then((response) => {
+        }).then(response => {
           event.record.数値.value = response;
           return event;
-        }));
+        })
+      );
       await kintone.events.do(method, { recordId: '1' });
 
       const actual = await getActual('1');
@@ -93,7 +94,7 @@ describe('app.record.index.edit.submit', () => {
 
   describe('returnしない場合', () => {
     it('recordのフィールドを変更した時、反映されないこと', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.value = '999';
       });
       await kintone.events.do(method, { recordId: '1' });

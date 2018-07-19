@@ -1,8 +1,8 @@
 /* eslint-disable no-undef, no-unused-vars */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
 describe('getId', () => {
   it('schemaのappIdが返ること', async () => {
@@ -62,7 +62,9 @@ describe('getLookupTargetAppId', () => {
 describe('getRelatedRecordsTargetAppId', () => {
   describe('関連レコード一覧の場合', () => {
     it('関連レコード一覧ののappIdが返ること', async () => {
-      const actual = kintone.app.getRelatedRecordsTargetAppId('関連レコード一覧');
+      const actual = kintone.app.getRelatedRecordsTargetAppId(
+        '関連レコード一覧'
+      );
       assert.equal(actual, '5');
     });
   });
@@ -85,7 +87,9 @@ describe('getRelatedRecordsTargetAppId', () => {
     });
 
     it('nullが返ること', async () => {
-      const actual = kintone.app.getRelatedRecordsTargetAppId('関連レコード一覧');
+      const actual = kintone.app.getRelatedRecordsTargetAppId(
+        '関連レコード一覧'
+      );
       assert.isNull(actual);
     });
   });
@@ -134,7 +138,7 @@ describe('getFieldElements', () => {
       await kintone.events.do(method);
       (() => kintone.app.getFieldElements('数値')).should.throw(
         ReferenceError,
-        'document is not defined',
+        'document is not defined'
       );
     });
 
@@ -198,7 +202,7 @@ describe('getHeaderSpaceElement', () => {
       await kintone.events.do(method);
       (() => kintone.app.getHeaderSpaceElement()).should.throw(
         ReferenceError,
-        'document is not defined',
+        'document is not defined'
       );
     });
   });

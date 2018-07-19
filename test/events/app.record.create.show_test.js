@@ -1,9 +1,9 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
-const fixture = require('../../fixture');
 const { assert } = require('chai');
+const fixture = require('../../fixture');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -41,7 +41,7 @@ describe('app.record.create.show', () => {
   });
 
   it('recordのフィールドを書き換えた時、値が反映されること', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.record.数値.value = '999';
       return event;
     });
@@ -55,7 +55,7 @@ describe('app.record.create.show', () => {
 
   describe('returnしない場合', () => {
     it('recordのフィールドを書き換えた時、値が反映されないこと', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.value = '999';
       });
       await kintone.events.do(method, {
@@ -69,7 +69,7 @@ describe('app.record.create.show', () => {
 
   describe('return false', () => {
     it('recordのフィールドを書き換えた時、値が反映されないこと', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.value = '999';
         return false;
       });
@@ -84,7 +84,7 @@ describe('app.record.create.show', () => {
 
   describe('フィールドの編集不可を設定する', () => {
     it('プロパティ上は編集不可となる', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.disabled = true;
         return event;
       });
@@ -99,7 +99,7 @@ describe('app.record.create.show', () => {
 
   describe('フィールドにエラーを表示する', () => {
     it('プロパティ上はエラーメッセージが設定される', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.error = 'ERROR MESSAGE';
         return event;
       });
@@ -114,7 +114,7 @@ describe('app.record.create.show', () => {
 
   describe('画面の上部にエラーを表示する', () => {
     it('エラーメッセージは保持されない', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.error = 'ERROR MESSAGE';
         return event;
       });
@@ -129,7 +129,7 @@ describe('app.record.create.show', () => {
 
   describe('ルックアップの取得を自動で行う場合', () => {
     it('ルックアップ先に反映させない', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.ルックアップ.lookup = true;
         event.record.ルックアップ.value = 'テスト';
       });

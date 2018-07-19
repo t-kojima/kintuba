@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -24,12 +24,12 @@ describe('record GET', () => {
       '/k/v1/record',
       'GET',
       { app: 2, id: 1 },
-      (resp) => {
+      resp => {
         actual = resp.record.数値.value;
       },
-      (err) => {
+      err => {
         actual = err.message;
-      },
+      }
     );
     assert.equal(actual, '99');
   });
@@ -37,12 +37,12 @@ describe('record GET', () => {
   it('レコードが取得できること（kintone.Promise）', async () => {
     let actual;
     await kintone.api('/k/v1/record', 'GET', { app: 2, id: 1 }).then(
-      (resolve) => {
+      resolve => {
         actual = resolve.record.数値.value;
       },
-      (reject) => {
+      reject => {
         actual = reject.message;
-      },
+      }
     );
     assert.equal(actual, '99');
   });
@@ -54,12 +54,12 @@ describe('record GET', () => {
         '/k/v1/reco',
         'GET',
         { app: 2, id: 0 },
-        (resp) => {
+        resp => {
           actual = resp.record.数値.value;
         },
-        (err) => {
+        err => {
           actual = err.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid pathOrUrl');
     });
@@ -67,12 +67,12 @@ describe('record GET', () => {
     it('レコードが取得できないこと（kintone.Promise）', async () => {
       let actual;
       await kintone.api('/k/v1/reco', 'GET', { app: 2, id: 0 }).then(
-        (resolve) => {
+        resolve => {
           actual = resolve.record.数値.value;
         },
-        (reject) => {
+        reject => {
           actual = reject.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid pathOrUrl');
     });
@@ -85,12 +85,12 @@ describe('record GET', () => {
         '/k/v1/record',
         'DELETE',
         { app: 2, id: 0 },
-        (resp) => {
+        resp => {
           actual = resp.record.数値.value;
         },
-        (err) => {
+        err => {
           actual = err.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid method [DELETE]');
     });
@@ -98,12 +98,12 @@ describe('record GET', () => {
     it('レコードが取得できないこと（kintone.Promise）', async () => {
       let actual;
       await kintone.api('/k/v1/record', 'DELETE', { app: 2, id: 0 }).then(
-        (resolve) => {
+        resolve => {
           actual = resolve.record.数値.value;
         },
-        (reject) => {
+        reject => {
           actual = reject.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid method [DELETE]');
     });
@@ -116,12 +116,12 @@ describe('record GET', () => {
         '/k/v1/record',
         'GET',
         { app: 9, id: 1 },
-        (resp) => {
+        resp => {
           actual = resp.record.数値.value;
         },
-        (err) => {
+        err => {
           actual = err.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -129,12 +129,12 @@ describe('record GET', () => {
     it('レコードが取得できないこと（kintone.Promise）', async () => {
       let actual;
       await kintone.api('/k/v1/record', 'GET', { app: 9, id: 1 }).then(
-        (resolve) => {
+        resolve => {
           actual = resolve.record.数値.value;
         },
-        (reject) => {
+        reject => {
           actual = reject.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -147,12 +147,12 @@ describe('record GET', () => {
         '/k/v1/record',
         'GET',
         { app: 2, id: 0 },
-        (resp) => {
+        resp => {
           actual = resp.record.数値.value;
         },
-        (err) => {
+        err => {
           actual = err.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -160,12 +160,12 @@ describe('record GET', () => {
     it('レコードが取得できないこと（kintone.Promise）', async () => {
       let actual;
       await kintone.api('/k/v1/record', 'GET', { app: 2, id: 0 }).then(
-        (resolve) => {
+        resolve => {
           actual = resolve.record.数値.value;
         },
-        (reject) => {
+        reject => {
           actual = reject.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -191,12 +191,12 @@ describe('record POST', () => {
           },
         },
       },
-      (resp) => {
+      resp => {
         actual = resp;
       },
-      (err) => {
+      err => {
         actual = err.message;
-      },
+      }
     );
     assert.deepEqual(actual, {
       id: '4',
@@ -216,12 +216,12 @@ describe('record POST', () => {
         },
       })
       .then(
-        (resolve) => {
+        resolve => {
           actual = resolve;
         },
-        (reject) => {
+        reject => {
           actual = reject.message;
-        },
+        }
       );
     assert.deepEqual(actual, {
       id: '4',
@@ -250,12 +250,12 @@ describe('record POST', () => {
         '/k/v1/record',
         'POST',
         { app: 9, id: 1 },
-        (resp) => {
+        resp => {
           actual = resp;
         },
-        (err) => {
+        err => {
           actual = err.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -263,12 +263,12 @@ describe('record POST', () => {
     it('レコードが登録できないこと（kintone.Promise）', async () => {
       let actual;
       await kintone.api('/k/v1/record', 'POST', { app: 9, id: 1 }).then(
-        (resolve) => {
+        resolve => {
           actual = resolve;
         },
-        (reject) => {
+        reject => {
           actual = reject.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -281,12 +281,12 @@ describe('record POST', () => {
         '/k/v1/record',
         'POST',
         { app: 2 },
-        (resp) => {
+        resp => {
           actual = resp;
         },
-        (err) => {
+        err => {
           actual = err.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -294,12 +294,12 @@ describe('record POST', () => {
     it('レコードが登録できないこと（kintone.Promise）', async () => {
       let actual;
       await kintone.api('/k/v1/record', 'POST', { app: 2 }).then(
-        (resolve) => {
+        resolve => {
           actual = resolve;
         },
-        (reject) => {
+        reject => {
           actual = reject.message;
-        },
+        }
       );
       assert.equal(actual, 'Invalid params');
     });
@@ -328,12 +328,12 @@ describe('record PUT', () => {
               },
             },
           },
-          (resp) => {
+          resp => {
             actual = resp;
           },
-          (err) => {
+          err => {
             actual = err.message;
-          },
+          }
         );
         assert.deepEqual(actual, {
           revision: '2',
@@ -352,12 +352,12 @@ describe('record PUT', () => {
               app: 2,
               id: 1,
             },
-            (resp) => {
+            resp => {
               actual = resp;
             },
-            (err) => {
+            err => {
               actual = err.message;
-            },
+            }
           );
           assert.deepEqual(actual, {
             revision: '1',
@@ -384,12 +384,12 @@ describe('record PUT', () => {
             },
             revision: 1,
           },
-          (resp) => {
+          resp => {
             actual = resp;
           },
-          (err) => {
+          err => {
             actual = err.message;
-          },
+          }
         );
         assert.deepEqual(actual, {
           revision: '2',
@@ -413,12 +413,12 @@ describe('record PUT', () => {
             },
             revision: -1,
           },
-          (resp) => {
+          resp => {
             actual = resp;
           },
-          (err) => {
+          err => {
             actual = err.message;
-          },
+          }
         );
         assert.deepEqual(actual, {
           revision: '2',
@@ -443,12 +443,12 @@ describe('record PUT', () => {
               },
               revision: 9,
             },
-            (resp) => {
+            resp => {
               actual = resp;
             },
-            (err) => {
+            err => {
               actual = err.message;
-            },
+            }
           );
           assert.equal(actual, 'Invalid params');
         });
@@ -476,12 +476,12 @@ describe('record PUT', () => {
             },
           })
           .then(
-            (resolve) => {
+            resolve => {
               actual = resolve;
             },
-            (reject) => {
+            reject => {
               actual = reject.message;
-            },
+            }
           );
         assert.deepEqual(actual, {
           revision: '2',
@@ -506,12 +506,12 @@ describe('record PUT', () => {
             },
           })
           .then(
-            (resolve) => {
+            resolve => {
               actual = resolve;
             },
-            (reject) => {
+            reject => {
               actual = reject.message;
-            },
+            }
           );
         assert.equal(actual, 'Invalid params');
       });
@@ -534,12 +534,12 @@ describe('record PUT', () => {
             },
           })
           .then(
-            (resolve) => {
+            resolve => {
               actual = resolve;
             },
-            (reject) => {
+            reject => {
               actual = reject.message;
-            },
+            }
           );
         assert.equal(actual, 'Invalid params');
       });
@@ -562,12 +562,12 @@ describe('record PUT', () => {
             },
           })
           .then(
-            (resolve) => {
+            resolve => {
               actual = resolve;
             },
-            (reject) => {
+            reject => {
               actual = reject.message;
-            },
+            }
           );
         assert.equal(actual, 'Invalid params');
       });
@@ -592,12 +592,12 @@ describe('record PUT', () => {
           },
         })
         .then(
-          (resolve) => {
+          resolve => {
             actual = resolve;
           },
-          (reject) => {
+          reject => {
             actual = reject.message;
-          },
+          }
         );
       assert.equal(actual, 'Invalid params');
     });

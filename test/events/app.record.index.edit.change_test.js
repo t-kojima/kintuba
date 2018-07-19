@@ -1,10 +1,10 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -19,19 +19,28 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   it('イベントが発火すること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method, { recordId: '1', value: '99' });
+    const event = await kintone.events.do(method, {
+      recordId: '1',
+      value: '99',
+    });
     assert.equal(event.type, method);
   });
 
   it('field.typeが取得できること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method, { recordId: '1', value: '99' });
+    const event = await kintone.events.do(method, {
+      recordId: '1',
+      value: '99',
+    });
     assert.equal(event.changes.field.type, 'NUMBER');
   });
 
   it('設定したvalueが取得できること', async () => {
     kintone.events.on(method, event => event);
-    const event = await kintone.events.do(method, { recordId: '1', value: '991' });
+    const event = await kintone.events.do(method, {
+      recordId: '1',
+      value: '991',
+    });
     assert.equal(event.changes.field.value, '991');
   });
 
@@ -62,19 +71,25 @@ describe('app.record.index.edit.change.<フィールド>', () => {
   it('存在しないフィールドは動作しないこと', async () => {
     const unknown = 'app.record.index.edit.change.存在しないフィールド';
     kintone.events.on(unknown, event => event);
-    const event = await kintone.events.do(unknown, { recordId: '1', value: '993' });
+    const event = await kintone.events.do(unknown, {
+      recordId: '1',
+      value: '993',
+    });
     assert.isNull(event);
   });
 
   it('許可されないフィールドは動作しないこと', async () => {
     const disallow = 'app.record.index.edit.change.文字列__複数行_';
     kintone.events.on(disallow, event => event);
-    const event = await kintone.events.do(disallow, { recordId: '1', value: '994' });
+    const event = await kintone.events.do(disallow, {
+      recordId: '1',
+      value: '994',
+    });
     assert.isNull(event);
   });
 
   it('recordのフィールドを変更した場合反映されること', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.record['文字列__複数行_'].value = 'DUMMY2';
       return event;
     });
@@ -86,7 +101,7 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   describe('フィールドの編集可／不可を設定する', () => {
     it('プロパティ上は編集不可となる', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.disabled = true;
         return event;
       });
@@ -102,7 +117,7 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   describe('フィールドにエラーを表示する', () => {
     it('プロパティ上はエラーメッセージが設定される', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.error = 'ERROR MESSAGE';
         return event;
       });
@@ -118,7 +133,7 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   describe('画面の上部にエラーを表示する', () => {
     it('エラーメッセージは保持されない', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.error = 'ERROR MESSAGE';
         return event;
       });
@@ -134,7 +149,7 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
   describe('returnしない場合', () => {
     it('recordのフィールドを変更しても反映されないこと', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record['文字列__複数行_'].value = 'DUMMY2';
       });
       await kintone.events.do(method, { recordId: '1', value: '99' });
@@ -144,7 +159,7 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     });
 
     it('トリガーとなった値の変更はキャンセルされないこと', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record['文字列__複数行_'].value = 'DUMMY2';
       });
       await kintone.events.do(method, { recordId: '1', value: '999' });
@@ -158,7 +173,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     it('空白指定はデフォルトに値になること', async () => {
       const radio = 'app.record.index.edit.change.ラジオボタン';
       kintone.events.on(radio, event => event);
-      const event = await kintone.events.do(radio, { recordId: '1', value: '' });
+      const event = await kintone.events.do(radio, {
+        recordId: '1',
+        value: '',
+      });
       assert.equal(event.record.ラジオボタン.value, 'sample1');
     });
   });
@@ -167,7 +185,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     it('値の書き換えができないこと', async () => {
       const creator = 'app.record.index.edit.change.文字列__1行__AUTO_CALC';
       kintone.events.on(creator, event => event);
-      const event = await kintone.events.do(creator, { recordId: '1', value: '9999' });
+      const event = await kintone.events.do(creator, {
+        recordId: '1',
+        value: '9999',
+      });
       assert.equal(event.changes.field.value, '9999');
       assert.equal(event.record.文字列__1行__AUTO_CALC.value, '');
     });
@@ -177,7 +198,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     it('値の書き換えができないこと', async () => {
       const creator = 'app.record.index.edit.change.ルックアップ';
       kintone.events.on(creator, event => event);
-      const event = await kintone.events.do(creator, { recordId: '1', value: '9999' });
+      const event = await kintone.events.do(creator, {
+        recordId: '1',
+        value: '9999',
+      });
       assert.equal(event.changes.field.value, '9999');
       assert.equal(event.record.ルックアップ.value, '');
     });
@@ -187,7 +211,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
     it('値の書き換えができないこと', async () => {
       const creator = 'app.record.index.edit.change.文字列__1行_';
       kintone.events.on(creator, event => event);
-      const event = await kintone.events.do(creator, { recordId: '1', value: '9999' });
+      const event = await kintone.events.do(creator, {
+        recordId: '1',
+        value: '9999',
+      });
       assert.equal(event.changes.field.value, '9999');
       assert.equal(event.record['文字列__1行_'].value, 'DUMMY');
     });
@@ -205,7 +232,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
     it('イベントが発火しないこと', async () => {
       kintone.events.on(method, event => event);
-      const event = await kintone.events.do(method, { recordId: '1', value: '999' });
+      const event = await kintone.events.do(method, {
+        recordId: '1',
+        value: '999',
+      });
       assert.isNull(event);
     });
   });
@@ -222,7 +252,10 @@ describe('app.record.index.edit.change.<フィールド>', () => {
 
     it('存在しないidを指定した場合、undefinedが取得されること', async () => {
       kintone.events.on(method, event => event);
-      const event = await kintone.events.do(method, { recordId: '999', value: '999' });
+      const event = await kintone.events.do(method, {
+        recordId: '999',
+        value: '999',
+      });
       assert.isUndefined(event.recordId);
       assert.isUndefined(event.record);
     });

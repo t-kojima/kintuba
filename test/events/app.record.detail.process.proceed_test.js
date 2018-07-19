@@ -1,10 +1,10 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -90,7 +90,7 @@ describe('app.record.detail.process.proceed', () => {
   });
 
   it('recordのフィールドを書き換えた時、値が反映されること', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.record.数値.value = '999';
       return event;
     });
@@ -107,7 +107,7 @@ describe('app.record.detail.process.proceed', () => {
 
   describe('return false', () => {
     it('recordのフィールドを書き換えた時、値が反映されないこと', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.value = '999';
         return false;
       });
@@ -138,7 +138,7 @@ describe('app.record.detail.process.proceed', () => {
 
   describe('returnしない場合', () => {
     it('recordのフィールドを書き換えた時、値が反映されずにステータスのみ更新されること', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.value = '999';
       });
       await kintone.events.do(method, {
@@ -157,7 +157,7 @@ describe('app.record.detail.process.proceed', () => {
   describe('不正な値をreturnした場合', () => {
     it('エラーが設定され、アクションがキャンセルされること', async () => {
       // 不正な値ってなんだろう…？
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.value = '999';
         return 'INVALID VALUE';
       });
@@ -178,7 +178,7 @@ describe('app.record.detail.process.proceed', () => {
   describe('errorプロパティを設定してreturnした場合', () => {
     it('アクションがキャンセルされること', async () => {
       // アラートは表示されない
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.error = 'ERROR MESSAGE';
         event.record.数値.value = '999';
         return event;
@@ -200,12 +200,13 @@ describe('app.record.detail.process.proceed', () => {
   describe('kintone.Promiseオブジェクトをreturnした場合', () => {
     it('非同期処理の実行を待ってイベントの処理を開始すること', async () => {
       kintone.events.on(method, event =>
-        new kintone.Promise((resolve) => {
+        new kintone.Promise(resolve => {
           resolve('999');
-        }).then((response) => {
+        }).then(response => {
           event.record.数値.value = response;
           return event;
-        }));
+        })
+      );
       await kintone.events.do(method, {
         recordId: '1',
         action: 'test',
@@ -221,10 +222,10 @@ describe('app.record.detail.process.proceed', () => {
       kintone.events.on(
         method,
         event =>
-          new kintone.Promise((resolve) => {
+          new kintone.Promise(resolve => {
             event.record.数値.value = '999';
             resolve('999');
-          }),
+          })
       );
       await kintone.events.do(method, {
         recordId: '1',
@@ -242,10 +243,11 @@ describe('app.record.detail.process.proceed', () => {
           reject('999');
         })
           .then(() => event)
-          .catch((e) => {
+          .catch(e => {
             event.record.数値.value = e;
             return event;
-          }));
+          })
+      );
       await kintone.events.do(method, {
         recordId: '1',
         action: 'test',

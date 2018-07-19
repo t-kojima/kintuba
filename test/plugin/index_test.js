@@ -28,7 +28,7 @@ describe('proxy', () => {
       {},
       {},
       () => assert.fail(),
-      () => assert.fail(),
+      () => assert.fail()
     );
     assert.isUndefined(result);
   });
@@ -36,7 +36,10 @@ describe('proxy', () => {
 
 describe('getProxyConfig', () => {
   it('nullが返ること', async () => {
-    const actual = kintone.plugin.app.getProxyConfig('http://example.com', 'GET');
+    const actual = kintone.plugin.app.getProxyConfig(
+      'http://example.com',
+      'GET'
+    );
     assert.isNull(actual);
   });
 });
@@ -44,9 +47,15 @@ describe('getProxyConfig', () => {
 describe('setProxyConfig', () => {
   it('callbackが実行されること', async () => {
     let actual;
-    kintone.plugin.app.setProxyConfig('http://example.com', 'GET', {}, {}, () => {
-      actual = true;
-    });
+    kintone.plugin.app.setProxyConfig(
+      'http://example.com',
+      'GET',
+      {},
+      {},
+      () => {
+        actual = true;
+      }
+    );
     assert.isTrue(actual);
   });
 });
@@ -60,7 +69,7 @@ describe('upload', () => {
       {},
       {},
       () => assert.fail(),
-      () => assert.fail(),
+      () => assert.fail()
     );
     assert.isUndefined(result);
   });

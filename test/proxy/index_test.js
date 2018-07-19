@@ -11,7 +11,7 @@ describe('proxy', () => {
       {},
       {},
       () => assert.fail(),
-      () => assert.fail(),
+      () => assert.fail()
     );
     assert.isUndefined(result);
   });
@@ -26,7 +26,7 @@ describe('upload', () => {
       {},
       {},
       () => assert.fail(),
-      () => assert.fail(),
+      () => assert.fail()
     );
     assert.isUndefined(result);
   });

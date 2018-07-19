@@ -1,10 +1,10 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -40,7 +40,7 @@ describe('app.record.index.edit.show', () => {
   });
 
   it('recordのフィールドを書き換えたとき反映されないこと', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.record.数値.value = '999';
       return event;
     });
@@ -53,7 +53,7 @@ describe('app.record.index.edit.show', () => {
 
   describe('フィールドの編集可／不可を設定する', () => {
     it('プロパティ上は編集不可となる', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record.数値.disabled = true;
         return event;
       });

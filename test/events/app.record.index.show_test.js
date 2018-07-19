@@ -1,10 +1,10 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
+const { assert } = require('chai');
 const fixture = require('../../fixture');
 const schema = require('../../schema');
-const { assert } = require('chai');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -41,7 +41,7 @@ describe('app.record.index.show', () => {
   });
 
   it('recordsのフィールドを変更した時、反映されないこと', async () => {
-    kintone.events.on(method, (event) => {
+    kintone.events.on(method, event => {
       event.records.filter(a => a.$id.value === '1')[0].数値.value = '999';
       return event;
     });
@@ -71,27 +71,41 @@ describe('app.record.index.show', () => {
         await kintone.events
           .do(method, { viewId: '5519905' })
           .then(() => assert.fail())
-          .catch(e => assert.equal(e.message, 'date option is required when selected calendar'));
+          .catch(e =>
+            assert.equal(
+              e.message,
+              'date option is required when selected calendar'
+            )
+          );
       });
     });
 
     describe('date=2018-05の場合', () => {
       it('dateが設定されること', async () => {
         kintone.events.on(method, event => event);
-        const event = await kintone.events.do(method, { viewId: '5519905', date: '2018-05' });
+        const event = await kintone.events.do(method, {
+          viewId: '5519905',
+          date: '2018-05',
+        });
         assert.equal(event.date, '2018-05');
       });
 
       it('offsetとsizeがnullになること', async () => {
         kintone.events.on(method, event => event);
-        const event = await kintone.events.do(method, { viewId: '5519905', date: '2018-05' });
+        const event = await kintone.events.do(method, {
+          viewId: '5519905',
+          date: '2018-05',
+        });
         assert.isNull(event.offset);
         assert.isNull(event.size);
       });
 
       it('日付キーにレコードが設定されること', async () => {
         kintone.events.on(method, event => event);
-        const event = await kintone.events.do(method, { viewId: '5519905', date: '2018-05' });
+        const event = await kintone.events.do(method, {
+          viewId: '5519905',
+          date: '2018-05',
+        });
         assert.lengthOf(event.records['2018-05-18'], 2);
         assert.lengthOf(event.records['2018-05-19'], 1);
       });
@@ -160,7 +174,10 @@ describe('app.record.index.show', () => {
     describe('offset=20 and limit=40', () => {
       it('取得件数が40かつoffset=20で先頭IDが21、最終IDが60であること', async () => {
         kintone.events.on(method, event => event);
-        const event = await kintone.events.do(method, { offset: 20, limit: 40 });
+        const event = await kintone.events.do(method, {
+          offset: 20,
+          limit: 40,
+        });
         assert.equal(event.offset, 20);
         assert.equal(event.size, 40);
         assert.equal(event.records[0].$id.value, '21');

@@ -1,8 +1,7 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
-const fixture = require('../../fixture');
-
 const { assert } = require('chai');
+const fixture = require('../../fixture');
 
 describe('app.report.show', () => {
   const method = 'app.report.show';

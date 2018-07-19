@@ -22,7 +22,7 @@ describe('urlForGet', () => {
     });
     assert.equal(
       actual,
-      'https://dummy.cybozu.com/k/v1/records.json?foo=bar&record.key[0]=val1&record.key[1]=val2',
+      'https://dummy.cybozu.com/k/v1/records.json?foo=bar&record.key[0]=val1&record.key[1]=val2'
     );
   });
 
@@ -34,11 +34,11 @@ describe('urlForGet', () => {
         record: { key: ['val1', 'val2'] },
         item: { item2: { item3: 4 } },
       },
-      true,
+      true
     );
     assert.equal(
       actual,
-      'https://dummy.cybozu.com/k/guest/1/v1/records.json?foo=bar&record.key[0]=val1&record.key[1]=val2&item.item2.item3=4',
+      'https://dummy.cybozu.com/k/guest/1/v1/records.json?foo=bar&record.key[0]=val1&record.key[1]=val2&item.item2.item3=4'
     );
   });
 });

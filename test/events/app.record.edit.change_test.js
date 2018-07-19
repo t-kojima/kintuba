@@ -1,9 +1,9 @@
 /* eslint-disable no-undef, no-param-reassign */
 require('../../.');
-const fixture = require('../../fixture');
 const { assert } = require('chai');
+const fixture = require('../../fixture');
 
-const getActual = async (id) => {
+const getActual = async id => {
   const method = 'app.record.index.edit.show';
   kintone.events.on(method, event => event);
   const event = await kintone.events.do(method, { recordId: id });
@@ -18,7 +18,7 @@ describe('app.record.edit.change.<フィールド>', () => {
 
   describe('returnしない場合', () => {
     it('トリガーとなった値の変更がキャンセルされること', async () => {
-      kintone.events.on(method, (event) => {
+      kintone.events.on(method, event => {
         event.record['文字列__複数行_'].value = 'DUMMY2';
       });
       await kintone.events.do(method, { recordId: '1', value: '999' });
