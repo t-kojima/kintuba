@@ -1,5 +1,3 @@
-
-
 const fs = require('fs');
 const { promisify } = require('util');
 
@@ -26,7 +24,6 @@ const createLogin = async () => {
   await promisify(fs.writeFile)(FILE_PATH, JSON.stringify(data, null, '  '), {
     encoding: ENCODING,
   });
-  // eslint-disable-next-line no-console
   console.info(`Create template ${FILE_PATH}`);
 };
 
@@ -39,14 +36,13 @@ const createRecords = async () => {
     return JSON.parse(json);
   };
 
-  const saveFile = async (data) => {
+  const saveFile = async data => {
     const FILE_PATH = '.kintuba/fixture/records.json';
     await promisify(fs.mkdir)('.kintuba').catch(() => {});
     await promisify(fs.mkdir)('.kintuba/fixture').catch(() => {});
     await promisify(fs.writeFile)(FILE_PATH, JSON.stringify(data, null, '  '), {
       encoding: ENCODING,
     });
-    // eslint-disable-next-line no-console
     console.info(`Create template ${FILE_PATH}`);
   };
 
@@ -62,12 +58,12 @@ const createRecords = async () => {
     },
   };
   Object.keys(json.properties)
-    // enable = false はスキップ
-    .filter((key) => {
+    // enabled: false は無効化されているフィールドなのでスキップ
+    .filter(key => {
       const prop = json.properties[key];
       return !('enabled' in prop) || prop.enabled;
     })
-    .forEach((key) => {
+    .forEach(key => {
       const prop = json.properties[key];
       records[key] = {
         type: prop.type,
@@ -77,7 +73,8 @@ const createRecords = async () => {
               code: '',
               name: '',
             };
-          } else if ('defaultValue' in prop) {
+          }
+          if ('defaultValue' in prop) {
             return prop.defaultValue;
           }
           return '';

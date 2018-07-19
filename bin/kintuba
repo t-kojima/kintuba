@@ -12,27 +12,18 @@ cli.command('*', 'Display help <default>', () => {
 });
 
 cli.command('init', 'Create an authentication template.', () => {
-  config.init().catch((err) => {
-    // eslint-disable-next-line no-console
-    console.error(err);
-  });
+  config.init().catch(console.error);
 });
 
 const fetchCommand = cli.command(
   'fetch',
   'Fetch are app schema files with kintone REST API.',
   async (input, flags) => {
-    await api.fetch().catch((err) => {
-      // eslint-disable-next-line no-console
-      console.error(err);
-    });
+    await api.fetch().catch(console.error);
     if (!flags.schema) {
-      await template.create().catch((err) => {
-        // eslint-disable-next-line no-console
-        console.error(err);
-      });
+      await template.create().catch(console.error);
     }
-  },
+  }
 );
 
 fetchCommand.option('schema', {

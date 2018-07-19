@@ -5,6 +5,7 @@ module.exports = {
   extends: ['airbnb', 'plugin:prettier/recommended'],
   plugins: ['import', 'prettier'],
   rules: {
+    'no-console': 0,
     'prettier/prettier': [
       'error',
       {

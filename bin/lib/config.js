@@ -1,5 +1,3 @@
-
-
 const fs = require('fs');
 const { promisify } = require('util');
 const { Validator } = require('jsonschema');
@@ -31,10 +29,10 @@ exports.init = async () => {
     password: '',
   };
 
-  const exists = async (path) => {
+  const exists = async path => {
     const result = await promisify(fs.access)(path)
       .then(() => true)
-      .catch((err) => {
+      .catch(err => {
         if (err.code === 'ENOENT') {
           return false;
         }
@@ -60,10 +58,12 @@ exports.load = async () => {
     return JSON.parse(json);
   };
 
-  const validate = (source) => {
+  const validate = source => {
     const result = new Validator().validate(source, schema);
     if (result.errors.length > 0) {
-      throw new Error(`${FILE_PATH} is an invalid json schema. [${result.errors[0].message}]`);
+      throw new Error(
+        `${FILE_PATH} is an invalid json schema. [${result.errors[0].message}]`
+      );
     }
   };
 
