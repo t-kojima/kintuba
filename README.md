@@ -94,7 +94,7 @@ kintuba を`require`しただけではデータが存在しない為、event.rec
 使用例）
 
 ```js
-const schema = require('kintone/schema');
+const schema = require('kintuba/schema');
 
 describe('example', () => {
   before(() => schema.load());
@@ -118,7 +118,7 @@ schema.load('other/dir');
 使用例）
 
 ```js
-const fixture = require('kintone/fixture');
+const fixture = require('kintuba/fixture');
 
 describe('example', () => {
   before(() => fixture.load());
